@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+:root[theme='dark'] {
+
+    /* FONT SIZE */
+    @for $i from 1 through 100 {
+        --fs#{$i}: #{$i}px;
+    }
+
+    /* FONT WEIGHT */
+    --fw1: 100;
+    --fw2: 200;
+    --fw3: 300;
+    --fw4: 400;
+    --fw5: 500;
+    --fw6: 600;
+    --fw7: 700;
+    --fw8: 800;
+    --fw9: 900;
+
+
+    /* FONT FAMILY */
+    --PlusJakartaSans: 'Plus Jakarta Sans',
+    sans-serif;
+    --inter : 'Inter',
+    sans-serif;
+
+    /* COLORS */
+    --WhiteClr: #ffffff;
+    --LightBrownClr: #BABABA;
+
+    /* BACKGROUND */
+    --BlackBgClr: #000000;
+    --LightBlackBgClr1: #131313;
+    --LightBlackBgClr2: #131313;
+
+    --LightCreamBgClr: #DEE2E6;
+
+
+    /* BORDER COLOR */
+    --LightWhiteBorderClr:#636363;
+    --LightWhiteBorderClr2:#ccc;
+
+}

@@ -1,0 +1,7 @@
+@use './sass/variables' as *;
+@use './sass/auth/Registerpage' as *;
+
+body {
+  background-color: var(--BlackBgClr) !important;
+  color: var(--WhiteClr) !important;
+}
