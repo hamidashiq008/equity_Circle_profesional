@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import LogoImg from '../../assets/images/logo.png';
 import GoogleImg from '../../assets/images/google.png';
 import FacebookImg from '../../assets/images/facebook1.png';
+import { loginUser } from '../../redux/slices/auth/loginSlice';
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const LoginPage = () => {
 
-    const loginApiUrl = "https://equity-api.techtrack.online/api/login";
-    const [errorMsg, setErrorMsg] = useState();
     const navigate = useNavigate();
+    const { isLoading, error, successMsg, token } = useSelector((state) => state.login);
 
+    const dispatch = useDispatch();
 
     const [userData, setUserData] = useState(
         {
-            name: '',
             email: '',
             password: '',
-            password_conformation: ''
         }
     );
 
@@ -27,28 +27,22 @@ const LoginPage = () => {
     }
     console.log(userData)
 
-    const LoginSubmit = async (e) => {
+    const LoginSubmit = (e) => {
 
         e.preventDefault();
+        dispatch(loginUser(userData));
 
-        const userFormData = new FormData();
-        userFormData.append('email', userData.email);
-        userFormData.append('password', userData.password);
-
-        try {
-            const loginApi = await axios.post(loginApiUrl, userFormData);
-            setErrorMsg('Successful');
-        } catch (error) {
-            const firstKey = Object.keys(error.response.data.errors)[0];
-            const firstErrorMessage = error.response.data.errors[firstKey][0];
-
-            setErrorMsg(firstErrorMessage);
-
-        }
+        console.log(token);
     }
     const changePage = () => {
-        navigate('/')
+        navigate('/register')
     }
+    useEffect(() => {
+        if (successMsg) {
+            navigate('/');
+        }
+    }, [successMsg]);
+
     return (
         <>
             <div className='login-page vh-100 d-flex align-items-center'>
@@ -80,9 +74,15 @@ const LoginPage = () => {
                                 </div>
                                 <div className="forgot-password">forgot password</div>
                             </div>
-                            {errorMsg}
-                            <button type='submit' className='sign-up-btn'>Login</button>
+
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? 'Signing up...' : 'Sign Up'}
+                            </button>
                         </form>
+
+                        {successMsg && <p style={{ color: 'green' }}>{successMsg}</p>}
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+
                         <div className="or-suggestion-head my-2 d-flex align-items-center ">
                             <hr className='flex-grow-1' />
                             <div className="or-text my-1 mx-3">

@@ -10,7 +10,7 @@ export const registerUser = createAsyncThunk(
       formData.append('name', userData.name);
       formData.append('email', userData.email);
       formData.append('password', userData.password);
-      formData.append('password_confirmation', userData.passwordConformation);
+      formData.append('password_confirmation', userData.password_confirmation);
 
       const response = await axios.post(
         'https://equity-api.techtrack.online/api/register',
@@ -33,7 +33,7 @@ const registerSlice = createSlice({
     successMessage: null,
   },
   reducers: {},
-  
+
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -49,7 +49,7 @@ const registerSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload?.message || 'Registration failed';
+        state.error = action.payload?.errors.email || 'Registration failed';
       });
   },
 });
