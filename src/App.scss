@@ -1,6 +1,10 @@
 @use './sass/variables' as *;
 @use './sass/auth/Registerpage' as *;
 @use './sass/components/header' as *;
+@use './sass/components/leftSidebar' as *; 
+@use './sass/layout/MainLayout' as * ;
+
+
 
 
 body {

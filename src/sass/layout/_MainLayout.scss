@@ -1,0 +1,23 @@
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+
+  .inner-layout {
+    display: flex;
+    height: calc(100vh - 79px);
+  }
+
+  .page-content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: black;
+    color: white;
+  }
+}
+
+
+ 

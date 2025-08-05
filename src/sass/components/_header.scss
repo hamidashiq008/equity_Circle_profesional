@@ -2,65 +2,88 @@
 
 .header-main-wrapper {
     background-color: #282828;
-    padding: 13px 0;
 
-    .container {
-        max-width: var(--Container1200);
-        margin: 0 auto;
+    .header-main-inner-wrapper {
+        position: relative;
 
-        .container-inner-wrapper {
-            .logo-wrapper {
-                max-width: 200px;
+        .container {
+            max-width: var(--Container1200);
+            margin: 0 auto;
+            padding: 15px 12px;
 
-                & img {
-                    width: 200px;
-                }
-            }
-
-            .icon-wrapper {
-                .icon-name {
-                    font-family: var(--inter);
-                    font-size: 14px;
-                    line-height: 25px;
-                }
-            }
-
-            .right-content-wrapper {
-                .search-bar-main-wrapper {
-                    max-width: 200px;
-
-                    .search-wrapper {
-                        position: relative;
-
-                        .icon-wrapper {
-                            width: 24px;
-                            height: 24px;
-                            position: absolute;
-                            top: 6px;
-                            left: 5px;
-
-                            & img {
-                                width: 100%;
-                            }
-                        }
-
-                        & input {
-                            background-color: var(--LightBlackBgClr2);
-                            border: none;
-                            border-radius: 5px;
-                            padding: 8.5px 7px 8.5px 32px;
-                            color: var(--WhiteClr);
-                            width: 100%;
-                            font-size: 14px;
-                        }
+            .container-inner-wrapper {
+                .toogle-burger-wrapper {
+                    position: absolute;
+                    left: 30px;
+                    & button{
+                        background-color: unset;
+                        border: unset;
+                        color: white;
+                        font-size: 20px;
                     }
                 }
 
-                .notification-main-wrapper {
-                    background: var(--LightBlackBgClr2);
-                    padding: 8px 15px;
-                            border-radius: 5px;
-                    
+                .logo-wrapper {
+                    max-width: 200px;
+
+                    & img {
+                        width: 200px;
+                    }
+                }
+
+                .icon-wrapper {
+                    .icon-name {
+                        font-family: var(--inter);
+                        font-size: 14px;
+                        line-height: 25px;
+                    }
+                }
+
+                .right-content-wrapper {
+                    .search-bar-main-wrapper {
+                        max-width: 200px;
+
+                        .search-wrapper {
+                            position: relative;
+
+                            .icon-wrapper {
+                                width: 24px;
+                                height: 24px;
+                                position: absolute;
+                                top: 6px;
+                                left: 5px;
+
+                                & img {
+                                    width: 100%;
+                                }
+                            }
+
+                            & input {
+                                background-color: var(--LightBlackBgClr2);
+                                border: none;
+                                border-radius: 5px;
+                                padding: 8.5px 7px 8.5px 32px;
+                                color: var(--WhiteClr);
+                                width: 100%;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+
+                    .notification-main-wrapper {
+                        background: var(--LightBlackBgClr2);
+                        padding: 8px 15px;
+                        border-radius: 5px;
+
+                    }
+
+                    .user-profile {
+                        & img {
+                            border-radius: 50%;
+                            height: 42px;
+                            width: 42px;
+                        }
+                    }
                 }
             }
         }

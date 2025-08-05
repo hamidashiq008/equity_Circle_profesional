@@ -77,7 +77,7 @@ const RegisterPage = () => {
                 <div className="forgot-password">forgot password</div>
               </div>
 
-              <button type="submit" disabled={isLoading}>
+              <button type="submit" className='sign-up-btn' disabled={isLoading}>
                 {isLoading ? 'Signing up...' : 'Sign Up'}
               </button>
             </form>

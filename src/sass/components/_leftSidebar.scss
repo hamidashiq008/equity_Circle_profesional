@@ -1,0 +1,44 @@
+.sidebar {
+  background-color: #282828;
+  color: white;
+  height: calc(100vh - 80px);
+  transition: width 0.3s ease;
+  overflow: hidden;
+  border-top: 1px solid rgb(158, 158, 158);
+  padding: 1.5rem 5px;
+
+  .sidebar.open {
+    width: 300px;
+  }
+
+  .sidebar.collapsed {
+    width: 90px;
+  }
+
+
+  .toggle-btn {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px 10px 10px 23px;
+  }
+
+  .closed-sidebar-content {
+    width: 82px;
+
+    .close-inner-wrapper {
+      padding: 0 5px;
+
+      .links-wrapper {
+        .inner-link-content {
+          .name-wrapper {
+            font-size: 10px;
+          }
+        }
+      }
+    }
+  }
+
+}

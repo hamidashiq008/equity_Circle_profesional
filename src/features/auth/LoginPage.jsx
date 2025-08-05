@@ -75,8 +75,8 @@ const LoginPage = () => {
                                 <div className="forgot-password">forgot password</div>
                             </div>
 
-                            <button type="submit" disabled={isLoading}>
-                                {isLoading ? 'Signing up...' : 'Sign Up'}
+                            <button type="submit" className='login-btn' disabled={isLoading}>
+                                {isLoading ? 'Login...' : 'Login'}
                             </button>
                         </form>
 
