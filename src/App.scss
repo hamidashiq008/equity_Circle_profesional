@@ -1,8 +1,9 @@
 @use './sass/variables' as *;
 @use './sass/auth/Registerpage' as *;
 @use './sass/components/header' as *;
-@use './sass/components/leftSidebar' as *; 
-@use './sass/layout/MainLayout' as * ;
+@use './sass/components/leftSidebar' as *;
+@use './sass/layout/MainLayout' as *;
+@use './sass/HomeFeeds' as *;
 
 
 
@@ -11,4 +12,33 @@ body {
   background-color: var(--BlackBgClr) !important;
   color: var(--WhiteClr) !important;
   font-family: var(--inter) !important;
+}
+
+/* Apply to entire page */
+div::-webkit-scrollbar {
+  width: 4px;
+  /* Scrollbar width */
+}
+
+/* Scrollbar track (background) */
+div::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+/* Scrollbar handle (thumb) */
+div::-webkit-scrollbar-thumb {
+  background: #5e5e5e;
+  border-radius: 10px;
+}
+
+/* Scrollbar handle on hover */
+.desceition-div.clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.desceition-div{
+  color: rgb(255, 255, 255);
+
 }

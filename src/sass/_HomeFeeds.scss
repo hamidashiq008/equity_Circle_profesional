@@ -1,0 +1,77 @@
+.facebook-card {
+    max-width: 600px;
+    margin: 20px auto;
+    border-radius: 10px;
+    background-color: rgb(37 39 40) !important;
+
+    color: white;
+
+    .card-header {
+        background-color: rgb(37 39 40);
+
+        border-bottom: none;
+        color: white;
+    }
+
+    .card-body {
+        .likes-wrapper {
+
+            color: white;
+        }
+
+        .comment-and-share {
+            color: white;
+        }
+    }
+
+    .page-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .card-img-wrapper {
+        position: relative;
+    }
+
+    .card-img-top {
+        width: 100%;
+        object-fit: cover;
+        max-height: 500px;
+    }
+
+    .overlay {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+        color: white;
+    }
+
+    .breaking-banner {
+        background-color: green;
+        color: white;
+        display: inline-block;
+        font-weight: bold;
+        padding: 5px 10px;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .headline {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .card-footer {
+        border-top: 1px solid rgb(156, 156, 156);
+    }
+
+    .card-footer button {
+        width: 100%;
+        background: none;
+        border: none;
+        color: white !important;
+    }
+}

@@ -11,7 +11,7 @@ import { registerUser } from '../../redux/slices/auth/registerSlice';
 const RegisterPage = () => {
 
   const navigate = useNavigate();
-  const { isLoading, error, successMessage } = useSelector((state) => state.register);
+  const { isLoading, error, successMessage } = useSelector((state) => state.registers);
 
   const dispatch = useDispatch();
 

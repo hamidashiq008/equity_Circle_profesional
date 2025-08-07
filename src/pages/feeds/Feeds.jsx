@@ -1,6 +1,7 @@
 import React from 'react';
-import GymImg1 from '../assets/images/gymImg1.png';
-import GymImg2 from '../assets/images/gymImg2.png'; 
+import GymImg1 from '../../assets/images/gymImg1.png';
+import GymImg2 from '../../assets/images/gymImg2.png';
+import { Link } from 'react-router-dom';
 const cardData = [
     {
         id: 1,
@@ -9,14 +10,14 @@ const cardData = [
         description: 'This is the description for card 1.',
         buttonText: 'Read More',
     },
-     {
+    {
         id: 2,
         image: GymImg2,
         title: 'Card Title 2',
         description: 'This is the description for card 1.',
         buttonText: 'Read More',
     },
-    
+
 ];
 
 const Feeds = () => {
@@ -30,7 +31,14 @@ const Feeds = () => {
                             <div className="card-body">
                                 <h5 className="card-title">{card.title}</h5>
                                 <p className="card-text">{card.description}</p>
-                                <button className="btn btn-primary">{card.buttonText}</button>
+                                <Link
+                                    to={`/feeds/${card.id}`}
+                                    state={{ card }} // 👈 passing the full card as state
+                                    className="btn btn-primary"
+                                >
+                                    {card.buttonText}
+                                </Link>
+
                             </div>
                         </div>
                     </div>

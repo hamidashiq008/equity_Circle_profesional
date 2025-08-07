@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.scss'
-import RegisterPage from './features/auth/RegisterPage'
+
+import './App.scss' 
 import RouterPage from './routes/RouterPage'
 import UserDetail from './features/user/UserDetail'
+import '@fortawesome/fontawesome-free/css/all.min.css'; // ✅ Make sure this is NOT commented
+
+
 
 function App() {
   return (
