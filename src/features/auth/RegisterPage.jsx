@@ -33,6 +33,9 @@ const RegisterPage = () => {
 
     e.preventDefault();
     dispatch(registerUser(userData));
+    setTimeout(() => {
+      navigate('/login');
+    }, 3000);
 
   }
   const changePage = () => {
@@ -65,7 +68,7 @@ const RegisterPage = () => {
                 <label htmlFor="">Password</label>
                 <input type="password" placeholder='Enter your Password' name='password' onChange={userValues} />
               </div>
-                <div className='d-flex flex-column gap-2'>
+              <div className='d-flex flex-column gap-2'>
                 <label htmlFor="">Password</label>
                 <input type="password" placeholder='Enter your Password' name='password_confirmation' onChange={userValues} />
               </div>

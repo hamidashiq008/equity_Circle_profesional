@@ -128,6 +128,28 @@ const Sidebar = ({ isOpen }) => {
               </div>
             </div>
           </Nav.Link>
+            {/* <Nav.Link as={Link} to="/login">
+
+            <div className="inner-link-content  d-flex align-items-center gap-3">
+              <div className="icon-wrapper">
+                <img src={EventCalendarIcon} alt="" />
+              </div>
+              <div className="name-wrapper">
+                Login
+              </div>
+            </div>
+          </Nav.Link>
+            <Nav.Link as={Link} to="/register">
+
+            <div className="inner-link-content  d-flex align-items-center gap-3">
+              <div className="icon-wrapper">
+                <img src={EventCalendarIcon} alt="" />
+              </div>
+              <div className="name-wrapper">
+               Register
+              </div>
+            </div>
+          </Nav.Link> */}
 
         </div>
       </div>}

@@ -1,10 +1,10 @@
 .sidebar {
-  background-color: #282828;
+  background-color: #1e1e1e;
   color: white;
   height: calc(100vh - 80px);
   transition: width 0.3s ease;
   overflow: hidden;
-  border-top: 1px solid rgb(158, 158, 158);
+  // border-top: 1px solid rgb(158, 158, 158);
   padding: 1.5rem 5px;
 
   .sidebar.open {

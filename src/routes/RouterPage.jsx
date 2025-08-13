@@ -3,7 +3,7 @@ import RegisterPage from '../features/auth/RegisterPage';
 import LoginPage from '../features/auth/LoginPage';
 import { Route, Routes } from 'react-router-dom';
 import UserProfile from '../features/user/UserProfile'
-import Home from '../pages/Home';
+import Home from '../pages/education/home/Home';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
 import Education from '../pages/education/Education';
@@ -12,6 +12,7 @@ import Feeds from '../pages/feeds/Feeds';
 import EventCalendar from '../pages/EventCalendar';
 import FeedsDetails from '../pages/feeds/FeedsDetails';
 import EducationDetails from '../pages/education/EducationDetails';
+import PostComments from '../modals/PostComments';
 const RouterPage = () => {
     return (
         <div>
@@ -31,10 +32,11 @@ const RouterPage = () => {
                     <Route path="/feeds/:id" element={<FeedsDetails />} />
                     <Route path='/education' element={<Education />} />
                     <Route path='/education/:id' element={<EducationDetails />} />
-
                     <Route path='/joblist' element={<Joblist />} />
                     <Route path='/event-calendar' element={<EventCalendar />} />
                     <Route path='/userProfile' element={<UserProfile />} />
+                    <Route path='/postComments' element={<PostComments />} />
+
                 </Route>
 
             </Routes>

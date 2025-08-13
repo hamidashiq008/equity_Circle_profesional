@@ -15,7 +15,8 @@
                 .toogle-burger-wrapper {
                     position: absolute;
                     left: 30px;
-                    & button{
+
+                    & button {
                         background-color: unset;
                         border: unset;
                         color: white;
@@ -77,11 +78,86 @@
 
                     }
 
-                    .user-profile {
+                    .user-profile-main-wrapper {
+                        cursor: pointer;
+                        position: relative;
+
                         & img {
                             border-radius: 50%;
                             height: 42px;
                             width: 42px;
+                        }
+
+                        .profile-menu-bar {
+                            position: absolute;
+                            top: 50px;
+                            background-color: rgb(65, 65, 65);
+                            right: -5px;
+                            z-index: 99;
+                            border-radius: 7px;
+                            max-width: 300px;
+                            min-width: 300px;
+                            
+                            .profile-info-wrapper {
+                                padding: 14px;
+                                .user-intro {
+
+                                    .img-wrapper {
+                                        & img {
+                                            border-radius: 50%;
+                                            height: 40px;
+                                            width: 40px;
+                                        }
+
+                                    }
+
+                                    .user-about {
+                                        & p {
+                                            font-size: 13px !important;
+                                        }
+                                    }
+                                }
+                                .view-profile-link{
+                                    .view-profile{
+                                        font-size: 12px;
+                                        border: 1px solid rgb(194, 194, 194);
+                                        padding: 3px;
+                                        border-radius: 40px;
+                                        // text-align: center;
+                                    }
+                                }
+                            }
+                            .other-menus{
+                                border-top: 1px solid rgb(117, 117, 117) ;
+                                border-bottom: 1px solid rgb(117, 117, 117) ;
+                                padding: 16px 14px;
+                                .tiles-wrapper{
+                                    .tile{
+                                        .icon-wrapper{
+                                            & img{
+                                                width: 20px;
+                                                height: 20px;
+
+                                            }
+                                        }
+                                        .icon-name{
+                                            font-size: 15px;
+                                        }
+                                        
+                                    }
+                                }
+
+                            }
+                            .sing-out-wrapper{
+                                padding: 14px;
+                                                .icon-wrapper{
+                                            & img{
+                                                width: 20px;
+                                                height: 20px;
+
+                                            }
+                                        }
+                            }
                         }
                     }
                 }

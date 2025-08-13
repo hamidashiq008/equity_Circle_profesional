@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import axios from '../utils/axios';
+import axios from '../../../utils/axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import Hamid from '../assets/images/userProfile.png';
+import Hamid from '../../../assets/images/userProfile.png';
+import PostComments from '../../../modals/PostComments'; // <-- Make sure path is correct
+import { useNavigate } from 'react-router-dom';
 
 dayjs.extend(relativeTime);
 
@@ -13,7 +15,10 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedPosts, setExpandedPosts] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null); // for passing data to modal
   const observer = useRef();
+  const navigate = useNavigate()
 
   const fetchPosts = async (pageNum) => {
     try {
@@ -35,6 +40,7 @@ const Home = () => {
     fetchPosts(1);
   }, []);
 
+  // On scroll Next api hit Like next page will be show on scroll
   const lastPostRef = useCallback(
     (node) => {
       if (loading) return;
@@ -51,10 +57,28 @@ const Home = () => {
     [loading, hasMore, page]
   );
 
+
+  // Description ellipsis from 2 lines
   const toggleReadMore = (index) => {
     setExpandedPosts((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
+
+
+  // Comment open modal and remove add to url
+  const showCommentsModal = (post) => {
+    setSelectedPost(post); // set current post for modal
+    setShowModal(true);
+    navigate(`?${post.id}`, { replace: true });
+    console.log('POST', post.id)
+  };
+  // Comment close modal and remove id from url
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedPost(null);
+    // ✅ Remove postId from URL
+    navigate("", { replace: true });
+  };
   return (
     <>
       {posts.map((item, index) => {
@@ -76,7 +100,7 @@ const Home = () => {
               />
               <div>
                 <div className="fw-bold">{item.user?.name || 'Unknown'}</div>
-                <small>{dayjs(item.updated_at).fromNow()} · <i className="fas fa-globe-asia"></i></small>
+                <small>{dayjs(item.created_at).fromNow()} · <i className="fas fa-globe-asia"></i></small>
               </div>
             </div>
 
@@ -85,11 +109,13 @@ const Home = () => {
                 {item.description}
               </div>
               {isLong && (
-                <button className="btn btn-link p-0" onClick={() => toggleReadMore(index)}>
+                <button className="btn btn-link p-0 text-secondary" onClick={() => toggleReadMore(index)}>
                   {isExpanded ? 'Read less' : 'Read more'}
                 </button>
               )}
             </div>
+
+
 
             {item.media?.length > 0 && (
               <div className="card-img-wrapper">
@@ -137,7 +163,16 @@ const Home = () => {
               <button className="btn btn-light text-muted">
                 <i className="far fa-thumbs-up me-2"></i>Like
               </button>
-              <button className="btn btn-light text-muted">
+              {/* <button
+                className="btn btn-light text-muted comment-btn"
+                onClick={() => handleCommentClick(item)} // 👈 trigger modal
+              >
+                <i className="far fa-comment me-2"></i>Comment
+              </button> */}
+              <button
+                className="btn btn-light text-muted comment-btn"
+                onClick={() => showCommentsModal(item)} // 👈 trigger modal
+              >
                 <i className="far fa-comment me-2"></i>Comment
               </button>
               <button className="btn btn-light text-muted">
@@ -150,6 +185,16 @@ const Home = () => {
 
       {loading && <p className="text-center">Loading...</p>}
       {error && <p className="text-danger text-center">{error}</p>}
+
+      {/* Show Modal */}
+      {showModal && (
+        <PostComments
+          show={showModal}
+          onHide={closeModal}
+          post={selectedPost}
+          setPosts={setSelectedPost}
+        />
+      )}
     </>
   );
 };
