@@ -14,7 +14,8 @@ const LoginPage = () => {
     const { isLoading, error, successMsg, token } = useSelector((state) => state.login);
 
     const dispatch = useDispatch();
-
+    const userToken = localStorage.getItem('token');
+    
     const [userData, setUserData] = useState(
         {
             email: '',

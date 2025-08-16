@@ -79,6 +79,10 @@ const Home = () => {
     // ✅ Remove postId from URL
     navigate("", { replace: true });
   };
+
+
+  // redirect to login page if localStorage have not token
+  
   return (
     <>
       {posts.map((item, index) => {

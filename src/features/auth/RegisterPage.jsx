@@ -33,9 +33,9 @@ const RegisterPage = () => {
 
     e.preventDefault();
     dispatch(registerUser(userData));
-    setTimeout(() => {
-      navigate('/login');
-    }, 3000);
+    // setTimeout(() => {
+    //   navigate('/login');
+    // }, 5000);
 
   }
   const changePage = () => {
