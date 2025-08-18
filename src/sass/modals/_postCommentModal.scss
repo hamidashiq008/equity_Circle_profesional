@@ -1,11 +1,11 @@
 .post-comment-modal {
     .modal-dialog {
-        width: 80%;
+        min-width: 65vw;
 
         .modal-content {
             background-color: transparent;
             border-radius: 0 !important;
-            height: 750px;
+            height: 94vh;
 
             .modal-body {
                 background-color: #212328;
@@ -173,6 +173,25 @@
 
         .comment-reply {
             cursor: pointer;
+        }
+    }
+    .view-replies{
+        & span{
+            font-size: 12px;
+            color: #A8A8A8;
+            cursor: pointer;
+        }
+        .comment-replies-main-wrapper{
+            .profile-img{
+                & img{
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                }
+            }
+            .comment-reply-content{
+                font-size: 14px;
+            }
         }
     }
 }
