@@ -7,7 +7,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { BiMessageRounded } from "react-icons/bi";
 import { FiSend } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
-
+import Carousel from 'react-bootstrap/Carousel';
 import { BsBookmark, BsHeart } from "react-icons/bs";
 import dayjs from 'dayjs';
 import axios from '../utils/axios';
@@ -25,6 +25,12 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
   const [commentReplies, setCommentReplies] = useState(null);
   const [hideView, setHideView] = useState(false);
   const [commentRepliesViewID, setCommentRepliesViewID] = useState("");
+
+  // Delete and Report Functionality
+  const [showDeleteReportModal, setShowDeleteReportModal] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
+
+
   console.log('Replies', commentReplies);
 
   // Toggle comment like function
@@ -80,7 +86,7 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
     if (e.key === 'Backspace' && commentParentID && commentUserID) {
       const currentContent = commentTextContext.content;
       const expectedPattern = `@${post.comments.find(c => c.id === commentParentID)?.user?.name || ''} `;
-      
+
       // If cursor is at the end of @username pattern and user presses backspace
       if (currentContent === expectedPattern || currentContent === expectedPattern.trim()) {
         e.preventDefault();
@@ -170,6 +176,48 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
     setCommentUserID(e.user.id);
 
   }
+
+  // Delete Comment Function
+  const deleteCommentFunc = async (commentId) => {
+    try {
+      const response = await axios.delete(`/comments/${commentId}`);
+      if (response.status === 200) {
+        // Filter out the deleted comment from the post's comments
+        const updatedComments = post.comments.filter(comment => comment.id !== commentId);
+        setPosts({ ...post, comments: updatedComments });
+        setShowDeleteReportModal(false);
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      alert('Failed to delete comment');
+    }
+  }
+  // Comment Reply Like Function
+  const commentReplyLikeFunc = (replyId) => async () => {
+    try {
+      let response = await axios.post(`/like-comment`, { comment_id: replyId });
+      const updatedComments = post.comments.map(comment => {
+        if (comment.replies) {
+          return {
+            ...comment,
+            replies: comment.replies.map(reply => {
+              if (reply.id === replyId) {
+                return { ...reply, isLiked: response.data.isLiked, likes_count: response.data.likes_count };
+              }
+              return reply;
+            })
+          };
+        }
+        return comment;
+      });
+      setPosts({ ...post, comments: updatedComments });
+    }
+    catch (error) {
+      console.error('Error liking reply:', error);
+      alert('Failed to like reply');
+    }
+  }
+
   return (
     <>
       <Modal show={show} onHide={onHide} size="lg" centered className='post-comment-modal h-100'>
@@ -182,7 +230,26 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
             <div className="row inner-wrapper d-flex align-items-start h-100 p-0">
               {post.media.length > 0 ? <div className="col-lg-7 h-100 pe-0">
                 <div className="post-over-view">
-                  {post.media.length > 0 ? <img src={post.media[0].url} alt="" /> : null}
+                  {/* {post.media.length > 0 ? <img src={post.media[0].url} alt="" /> : null} */}
+                  {post.media?.length === 1 && (
+                    <div className="card-img-wrapper">
+                      <img
+                        src={post.media[0].url}
+                        alt="Post Media"
+                        className="card-img-top"
+                      />
+                    </div>
+                  )}
+
+                  {post.media?.length > 1 && (
+                    <Carousel touch={true}  fade={true} interval={null}  >
+                      {post.media.map((media, mediaIndex) => (
+                        <Carousel.Item key={mediaIndex} className="card-img-top">
+                          <img src={media.url} alt={`Media ${mediaIndex}`} />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  )}
 
                 </div>
               </div> : null}
@@ -192,7 +259,7 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                   <div className="post-comment-wrapper h-100">
                     <div className="post-comment-area-header  px-3 py-3">
                       <div className="inner-wrapper d-flex align-items-center justify-content-between">
-                        <div className="left-side-wrapper d-flex align-items-center gap-1">
+                        <div className="left-side-wrapper d-flex align-items-center gap-2">
                           <div className="user-profile-wrapper">
                             <img src={post.user.profile_image_url} alt="" />
                           </div>
@@ -212,200 +279,44 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                           <div className='profile-wrapper'>
                             <img src={comment.user.profile_image_url} alt="" />
                           </div>
-                          <div className="comment-content-detail-wrapper d-flex justify-content-between w-100">
-                            <div className="comment-details-main-wrapper">
-                              <div className="user-name-comment-content mb-2">
-                                <span className='user-name'>{comment.user.name}</span>
-                                <span key={index} className="main-parent-comment">
-                                  {comment?.content.trim() && comment.content.trim()}
-                                </span>
-                              </div>
-                              <div className="about-comment-created d-flex gap-2">
-                                <span className='comment-created-time'>
-                                  {
-                                    dayjs(comment.created_at).fromNow()
-                                  }
-                                </span>
-                                <span className='comment-like'>
-                                  {comment.likes_count > 0 && <span className="ms-1">{comment.likes_count} Likes</span>}
-
-                                </span>
-                                <span className='comment-reply' onClick={() => commentReplyFunction(comment)}>
-                                  Reply
-                                </span>
-                              </div>
-
-                              <div className="view-replies mt-2">
-
-                                {comment.replies && comment.replies.length > 0 ? (
-
-                                  <>
+                          <div className="inner-inner-main-wrapper w-100">
+                            <div className="comment-content-detail-wrapper d-flex justify-content-between w-100">
+                              <div className="comment-details-main-wrapper">
+                                <div className="user-name-comment-content mb-2">
+                                  <span className='user-name'>{comment.user.name}</span>
+                                  <span key={index} className="main-parent-comment">
+                                    {comment?.content.trim() && comment.content.trim()}
+                                  </span>
+                                </div>
+                                <div className="about-comment-created d-flex gap-2">
+                                  <span className='comment-created-time'>
                                     {
-                                      commentRepliesViewID !== comment.id ? (
-                                        <span onClick={() => { setHideView(!hideView); setCommentRepliesViewID(comment.id) }}>--- View Replies {comment.replies.length}</span>
-                                      ) : (
-                                        <>
-                                          <span className='' onClick={() => { setHideView(!hideView); setCommentRepliesViewID('') }}>--- Hide Replies</span>
-                                          <div className="comment-replies-main-wrapper mt-2 ">
-                                            {comment.replies.map((reply, index) => (
-
-                                              <div key={index} className='d-flex gap-2 mb-2'>
-                                                <div className="profile-img">
-                                                  <img src={reply.user.profile_image_url} alt="" />
-                                                </div>
-                                                <div className="div">
-                                                  <p className='mb-1 comment-reply-content'>
-                                                    {reply.content}
-                                                  </p>
-                                                  <div className="about-comment-created d-flex gap-2">
-                                                    <span className='comment-created-time'>
-                                                      {
-                                                        dayjs(reply.created_at).fromNow()
-                                                      }
-                                                    </span>
-                                                    {/* <span className='comment-like'>
-                                                  {comment.isLiked ? }
-                                                </span> */}
-                                                    <span className='comment-reply' onClick={() => commentReplyFunction(comment)}>
-                                                      Reply
-                                                    </span>
-                                                  </div>
-                                                </div>
-                                              </div>
-
-                                            ))}
-
-
-                                          </div>
-                                        </>
-                                      )
+                                      dayjs(comment.created_at).fromNow()
                                     }
+                                  </span>
+                                  <span className='comment-like'>
+                                    {comment.likes_count > 0 && <span className="ms-1">{comment.likes_count} Likes</span>}
+                                  </span>
+                                  <span className='comment-reply' onClick={() => commentReplyFunction(comment)}>
+                                    Reply
+                                  </span>
+                                  <span className='delete-and-report ' style={{ cursor: 'pointer' }} onClick={() => {
+                                    setSelectedCommentId(comment.id);
+                                    setShowDeleteReportModal(true);
+                                  }}>
+                                    <FaEllipsisH size={15} />
+                                  </span>
 
-                                  </>
-                                ) : null}
+                                </div>
+
 
                               </div>
-                            </div>
-                            <div className="comment-like-wrapper">
-                              <span className='comment-like' onClick={() => toggleCommentLike(comment.id)} style={{ cursor: 'pointer' }}>
-                                {comment.isLiked ? <FaHeart size={13} color="red" /> : <BsHeart size={13} />}
-                              </span>
-                            </div>
-                          </div>
-
-                        </div>
-                      ))}</div>
-
-                    </div>
-                    <div className="post-comment-area-footer p-3">
-                      <div className="inner-main-wrapper">
-                        <div className="icons-wrapper d-flex align-items-center justify-content-between gap-2">
-                          <div className="right-side-icons d-flex gap-2">
-                            <div>
-                              <AiOutlineHeart size={24} />
-                            </div>
-                            <div>
-
-                              <BiMessageRounded size={24} />
-                            </div>
-                            <div>
-                              <FiSend size={24} />
-
-                            </div>
-                          </div>
-                          <div className="lef-side-icons">
-                            <BsBookmark size={20} />
-                          </div>
-                        </div>
-                        <div className="likes-and-time-count-wrapper mt-2">
-                          <div className="like-count-wrapper">
-                            <span className='me-1'>
-                              {
-                                post.likes_count || '0'
-                              }
-                            </span>
-                            <span>
-                              {
-                                post.likes_count >= 0 ? 'Like' : 'Likes'
-                              }
-                            </span>
-                          </div>
-                          <div className="time-count-wrapper">
-                            {
-                              <small>{dayjs(post.created_at).fromNow()}  </small>
-                            }
-                          </div>
-                        </div>
-                        <div className="send-comment-wrapper">
-                          <div className="inner-wrapper d-flex align-items-center gap-2 mt-2 position-relative">
-                            <div
-                              className="icon-wrapper"
-                              style={{ cursor: "pointer", display: "inline-block", marginRight: "5px" }}
-                              onClick={() => setShowEmojiPicker((prev) => !prev)}
-                            >
-                              <FaRegSmile size={20} />
-                            </div>
-                            {/* Emoji picker */}
-                            {showEmojiPicker && (
-                              <div className='emoji-picker-main-wrapper' style={{ position: "absolute", bottom: "40px", left: "-42px", zIndex: 1000 }}>
-                                <EmojiPicker onEmojiClick={onEmojiClick} />
+                              <div className="comment-like-wrapper">
+                                <span className='comment-like' onClick={() => toggleCommentLike(comment.id)} style={{ cursor: 'pointer' }}>
+                                  {comment.isLiked ? <FaHeart size={13} color="red" /> : <BsHeart size={13} />}
+                                </span>
                               </div>
-                            )}
-                            <input value={commentTextContext.content} type="text" className='px-2 py-1 w-100 rounded border-0 send-comment' name='content' onChange={commentContextHolder} onKeyDown={handleKeyDown} />
-                            <button className='rounded border-0 post-btn py-1' onClick={sendCommentFucntion}>Post</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
-                  </div>
-                </div> : <div className="col-lg-12 h-100 ">
-
-                  <div className="post-comment-wrapper h-100">
-                    <div className="post-comment-area-header  px-3 py-3">
-                      <div className="inner-wrapper d-flex align-items-center justify-content-between">
-                        <div className="left-side-wrapper d-flex align-items-center gap-1">
-                          <div className="user-profile-wrapper">
-                            <img src={post.user.profile_image_url} alt="" />
-                          </div>
-                          <div className="user-name">
-                            <h6 className='m-0'>{post.user.name}</h6>
-                          </div>
-                        </div>
-                        <div className="right-side-content-wrapper">
-                          <FaEllipsisH size={20} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="post-comment-area-comments-content px-3 py-3">
-                      <div>{post?.comments?.map((comment, index) => (
-
-                        <div className="inner-main-wrapper d-flex gap-3 mb-3" key={index}>
-                          <div className='profile-wrapper'>
-                            <img src={comment.user.profile_image_url} alt="" />
-                          </div>
-                          <div className="comment-details-main-wrapper">
-                            <div className="user-name-comment-content mb-2">
-                              <span className='user-name'>{comment.user.name}</span>
-                              <span key={index} className="main-parent-comment">
-                                {comment?.content.trim() && comment.content.trim()}
-                              </span>
                             </div>
-                            <div className="about-comment-created d-flex gap-2">
-                              <span className='comment-created-time'>
-                                {
-                                  dayjs(comment.created_at).fromNow()
-                                }
-                              </span>
-                              {/* <span className='comment-like'>
-                                  {comment.isLiked ? }
-                                </span> */}
-                              <span className='comment-reply' onClick={() => commentReplyFunction(comment)}>
-                                Reply
-                              </span>
-                            </div>
-
                             <div className="view-replies mt-2">
 
                               {comment.replies && comment.replies.length > 0 ? (
@@ -413,7 +324,7 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                                 <>
                                   {
                                     commentRepliesViewID !== comment.id ? (
-                                      <span onClick={() => { setHideView(!hideView); setCommentRepliesViewID(comment.id) }}>--- View Replies</span>
+                                      <span onClick={() => { setHideView(!hideView); setCommentRepliesViewID(comment.id) }}>--- View Replies {comment.replies.length}</span>
                                     ) : (
                                       <>
                                         <span className='' onClick={() => { setHideView(!hideView); setCommentRepliesViewID('') }}>--- Hide Replies</span>
@@ -424,21 +335,28 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                                               <div className="profile-img">
                                                 <img src={reply.user.profile_image_url} alt="" />
                                               </div>
-                                              <div className="div">
-                                                <p className='mb-1 comment-reply-content'>
-                                                  {reply.content}
-                                                </p>
-                                                <div className="about-comment-created d-flex gap-2">
-                                                  <span className='comment-created-time'>
-                                                    {
-                                                      dayjs(reply.created_at).fromNow()
-                                                    }
-                                                  </span>
-                                                  {/* <span className='comment-like'>
-                                                  {comment.isLiked ? }
-                                                </span> */}
-                                                  <span className='comment-reply' onClick={() => commentReplyFunction(comment)}>
-                                                    Reply
+                                              <div className="div d-flex justify-content-between w-100">
+                                                <div className="reply-inner-main">
+                                                  <p className='mb-1 comment-reply-content'>
+                                                    {reply.content}
+                                                  </p>
+                                                  <div className="about-comment-created d-flex gap-2">
+                                                    <span className='comment-created-time'>
+                                                      {
+                                                        dayjs(reply.created_at).fromNow()
+                                                      }
+                                                    </span>
+                                                    {/* <span>
+                                                      likes
+                                                    </span> */}
+                                                    <span className='comment-reply' onClick={() => commentReplyFunction(comment)}>
+                                                      Reply
+                                                    </span>
+                                                  </div>
+                                                </div>
+                                                <div className="reply-like">
+                                                  <span className='comment-like' onClick={commentReplyLikeFunc(reply.id)} style={{ cursor: 'pointer' }}>
+                                                    {reply.isLiked ? <FaHeart size={13} color="red" /> : <BsHeart size={13} />}
                                                   </span>
                                                 </div>
                                               </div>
@@ -525,6 +443,9 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
 
 
                   </div>
+                </div> : <div className="col-lg-12 h-100 ">
+
+
                 </div>
               }
             </div>
@@ -534,6 +455,18 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
         </Modal.Body>
 
       </Modal>
+      {showDeleteReportModal && (
+        <Modal show={showDeleteReportModal} className='comment-delete-modal' onHide={() => setShowDeleteReportModal(false)} centered>
+
+          <Modal.Body>
+            {/* Yahan apni delete/report logic ya buttons rakh sakte hain */}
+            <Button variant="" className='w-100' style={{ color: 'red' }} onClick={() => deleteCommentFunc(selectedCommentId)}>Delete</Button>
+            <div className="comment-delete-cancle-btn mt-2 pt-2">
+              <Button variant="transparent" className='text-light w-100' onClick={() => setShowDeleteReportModal(false)}>Cancel</Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
     </>
   );
 };

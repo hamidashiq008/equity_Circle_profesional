@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import axios from '../../../utils/axios';
+import axios from '../../utils/axios';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import Hamid from '../../../assets/images/userProfile.png';
-import PostComments from '../../../modals/PostComments'; // <-- Make sure path is correct
+import Hamid from '../../assets/images/userProfile.png';
+import PostComments from '../../modals/PostComments'; // <-- Make sure path is correct
 import { useNavigate } from 'react-router-dom';
+import Carousel from 'react-bootstrap/Carousel'; 
 
 dayjs.extend(relativeTime);
 
@@ -80,9 +81,26 @@ const Home = () => {
     navigate("", { replace: true });
   };
 
+  // Post like function
+  const postLikeFunction = async (postId) => {
+    try {
+      const response = await axios.post(`/posts/${postId}/like`);
+      const updatedPosts = posts.map((post) => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            likes_count: response.data.likes_count,
+            isLiked: response.data.isLiked // Make sure API returns this
+          };
+        }
+        return post;
+      });
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  }
 
-  // redirect to login page if localStorage have not token
-  
   return (
     <>
       {posts.map((item, index) => {
@@ -121,7 +139,7 @@ const Home = () => {
 
 
 
-            {item.media?.length > 0 && (
+            {item.media?.length === 1 && (
               <div className="card-img-wrapper">
                 <img
                   src={item.media[0].url}
@@ -129,6 +147,16 @@ const Home = () => {
                   className="card-img-top"
                 />
               </div>
+            )}
+
+            {item.media?.length > 1 && (
+              <Carousel touch={true}  fade={true} interval={null}  >
+                {item.media.map((media, mediaIndex) => (
+                  <Carousel.Item key={mediaIndex} className="card-img-top">
+                    <img src={media.url} alt={`Media ${mediaIndex}`} />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
             )}
 
             <div className="card-body pt-2 pb-0">
@@ -164,8 +192,8 @@ const Home = () => {
             <hr className="my-1 mx-3" />
 
             <div className="card-footer d-flex justify-content-around">
-              <button className="btn btn-light text-muted">
-                <i className="far fa-thumbs-up me-2"></i>Like
+              <button className="btn btn-light text-muted" onClick={() => postLikeFunction(item.id)}>
+                {item.isLiked ? <i className="far fa-thumbs-up me-2 bg-danger"></i> : <i className="far fa-thumbs-up me-2"></i>}Like
               </button>
               {/* <button
                 className="btn btn-light text-muted comment-btn"
@@ -183,7 +211,7 @@ const Home = () => {
                 <i className="fas fa-share me-2"></i>Share
               </button>
             </div>
-          </div>
+          </div >
         );
       })}
 
@@ -191,14 +219,16 @@ const Home = () => {
       {error && <p className="text-danger text-center">{error}</p>}
 
       {/* Show Modal */}
-      {showModal && (
-        <PostComments
-          show={showModal}
-          onHide={closeModal}
-          post={selectedPost}
-          setPosts={setSelectedPost}
-        />
-      )}
+      {
+        showModal && (
+          <PostComments
+            show={showModal}
+            onHide={closeModal}
+            post={selectedPost}
+            setPosts={setSelectedPost}
+          />
+        )
+      }
     </>
   );
 };

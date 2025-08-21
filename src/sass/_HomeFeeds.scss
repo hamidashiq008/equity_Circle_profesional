@@ -1,5 +1,5 @@
 .facebook-card {
-    max-width: 600px;
+    max-width: 500px;
     margin: 20px auto;
     border-radius: 10px;
     background-color: rgb(37 39 40) !important;
@@ -34,10 +34,20 @@
         position: relative;
     }
 
+    .card-img-wrapper {}
+
     .card-img-top {
         width: 100%;
-        object-fit: cover;
-        max-height: 500px;
+        
+        & img { 
+            object-fit: cover;
+            max-height: 585px;
+            min-height: 585px;
+            object-fit: contain;
+            width: 100%;
+            object-position: center;
+        }
+
     }
 
     .overlay {
@@ -74,4 +84,22 @@
         border: none;
         color: white !important;
     }
+}
+
+.facebook-card {
+    .carousel {
+        .carousel-indicators {
+            // margin-bottom: 0;
+        }
+    }
+}
+
+.carousel-indicators [data-bs-target] {
+}
+
+.carousel-indicators [data-bs-target] {
+    border-radius: 50%;
+    width: 6px !important;
+    height: 6px !important;
+
 }

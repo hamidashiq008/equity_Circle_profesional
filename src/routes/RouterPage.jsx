@@ -3,7 +3,7 @@ import RegisterPage from '../features/auth/RegisterPage';
 import LoginPage from '../features/auth/LoginPage';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import UserProfile from '../features/user/UserProfile'
-import Home from '../pages/education/home/Home';
+import Home from '../pages/home/Home';
 import AuthLayout from '../layouts/AuthLayout';
 import MainLayout from '../layouts/MainLayout';
 import Education from '../pages/education/Education';
