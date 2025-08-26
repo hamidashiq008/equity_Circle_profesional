@@ -1,20 +1,21 @@
 .sidebar {
-  background-color: #1e1e1e;
+  background-color: rgb(0 0 0);
   color: white;
   height: calc(100vh - 80px);
   transition: width 0.3s ease;
+  max-width: 366px;
+  width: 100%;
   overflow: hidden;
-  // border-top: 1px solid rgb(158, 158, 158);
+  border-right: 1px solid rgb(38, 38, 38);
   padding: 1.5rem 5px;
 
   .sidebar.open {
-    width: 300px;
+    width: 366px !important;
   }
 
   .sidebar.collapsed {
     width: 185px;
   }
-
 
   .toggle-btn {
     background: none;
@@ -32,6 +33,9 @@
       padding: 0 5px;
 
       .links-wrapper {
+        padding-left: 20px;
+        padding-right: 20px;
+        gap: 32px;
         .inner-link-content {
           .name-wrapper {
             font-size: 10px;
@@ -40,5 +44,21 @@
       }
     }
   }
+}
 
+.links-wrapper {
+  padding-left: 20px;
+  padding-right: 20px;
+  gap: 32px;
+}
+.suggestion-main-div {
+  max-width: 500px;
+  width: 100%;
+  .suggestion-inner-div {
+    // margin: 0 auto;
+    max-width: 290px;
+    width: 100%;
+    margin-left: 3rem;
+    margin-top: 1rem;
+  }
 }

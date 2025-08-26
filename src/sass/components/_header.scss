@@ -1,9 +1,9 @@
 @use '../variables' as *;
 
 .header-main-wrapper {
-    background-color: #282828;
-
     .header-main-inner-wrapper {
+        background: #000000;
+        box-shadow: 0 0 10px 8px #1a1a1a;
         position: relative;
 
         .container {

@@ -127,14 +127,29 @@ const Home = () => {
             </div>
 
             <div className="p-2">
-              <div className={`desceition-div ${!isExpanded ? 'clamp' : ''}`}>
-                {item.description}
+              <div className="desceition-div">
+                <span className={`${!isExpanded ? 'clamp' : ''}`}>
+                  {item.description}
+                </span>
+                {isLong && !isExpanded && (
+                  <button
+                    className="btn p-0 read-more-btn"
+                    style={{ color: '#A8A8A8', fontSize: '14px', background: '#121212' }}
+                    onClick={() => toggleReadMore(index)}
+                  >
+                    ...Read more
+                  </button>
+                )}
+                {isLong && isExpanded && (
+                  <button
+                    className="btn p-0 read-less-btn ms-2"
+                    style={{ color: '#A8A8A8', fontSize: '14px' }}
+                    onClick={() => toggleReadMore(index)}
+                  >
+                    Read less
+                  </button>
+                )}
               </div>
-              {isLong && (
-                <button className="btn btn-link p-0 text-secondary" onClick={() => toggleReadMore(index)}>
-                  {isExpanded ? 'Read less' : 'Read more'}
-                </button>
-              )}
             </div>
 
 

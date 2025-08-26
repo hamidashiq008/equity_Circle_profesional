@@ -2,12 +2,12 @@
     max-width: 500px;
     margin: 20px auto;
     border-radius: 10px;
-    background-color: rgb(37 39 40) !important;
+    background-color: #121212 !important;
 
     color: white;
 
     .card-header {
-        background-color: rgb(37 39 40);
+        background-color: #121212;
 
         border-bottom: none;
         color: white;
@@ -83,6 +83,47 @@
         background: none;
         border: none;
         color: white !important;
+    }
+
+    // Description with inline Read more at end of 2nd line
+    .desceition-div {
+        position: relative;
+        color: #E6E6E6;
+
+        // default expanded text styles
+        span {
+            white-space: normal;
+        }
+
+        // two-line clamp when not expanded
+        .clamp {
+            display: -webkit-box;
+            line-clamp: 2; // standard property for some engines
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        // place the Read more button at end of the 2nd line
+        .read-more-btn {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            line-height: 1.2;
+            // create a soft fade from text to background under the button
+            padding-left: 16px;
+        }
+
+        .read-more-btn::before {
+            content: "";
+            position: absolute;
+            right: 100%;
+            bottom: 0;
+            width: 56px;
+            height: 1.2em;
+            pointer-events: none;
+            background: linear-gradient(to right, rgba(18, 18, 18, 0), #121212 80%);
+        }
     }
 }
 
