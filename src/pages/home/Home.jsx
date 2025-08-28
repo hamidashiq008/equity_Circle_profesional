@@ -5,7 +5,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import Hamid from '../../assets/images/userProfile.png';
 import PostComments from '../../modals/PostComments'; // <-- Make sure path is correct
 import { useNavigate } from 'react-router-dom';
-import Carousel from 'react-bootstrap/Carousel'; 
+import Carousel from 'react-bootstrap/Carousel';
+import CreatePostModal from '../../modals/CreatePostModal';
 
 dayjs.extend(relativeTime);
 
@@ -57,14 +58,10 @@ const Home = () => {
     },
     [loading, hasMore, page]
   );
-
-
   // Description ellipsis from 2 lines
   const toggleReadMore = (index) => {
     setExpandedPosts((prev) => ({ ...prev, [index]: !prev[index] }));
   };
-
-
 
   // Comment open modal and remove add to url
   const showCommentsModal = (post) => {
@@ -100,9 +97,17 @@ const Home = () => {
       console.error('Error liking post:', error);
     }
   }
+  // Create Post Function
+  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const createPostFunc = () => {
+    setShowCreatePostModal(true);
+  }
 
   return (
     <>
+      <div className="create-post-btn">
+        <button className="btn btn-primary" onClick={createPostFunc}>Create Post</button>
+      </div>
       {posts.map((item, index) => {
         const isExpanded = expandedPosts[index];
         const isLong = item.description?.length > 150;
@@ -165,7 +170,7 @@ const Home = () => {
             )}
 
             {item.media?.length > 1 && (
-              <Carousel touch={true}  fade={true} interval={null}  >
+              <Carousel touch={true} fade={true} interval={null}  >
                 {item.media.map((media, mediaIndex) => (
                   <Carousel.Item key={mediaIndex} className="card-img-top">
                     <img src={media.url} alt={`Media ${mediaIndex}`} />
@@ -241,6 +246,14 @@ const Home = () => {
             onHide={closeModal}
             post={selectedPost}
             setPosts={setSelectedPost}
+          />
+        )
+      }
+      {
+        showCreatePostModal && (
+          <CreatePostModal
+            show={showCreatePostModal}
+            onHide={() => setShowCreatePostModal(false)}
           />
         )
       }
