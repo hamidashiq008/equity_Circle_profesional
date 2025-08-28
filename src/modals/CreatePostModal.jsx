@@ -8,7 +8,7 @@ const CreatePostModal = ({ show, onHide }) => {
     const [formField, setFormField] = useState({
         title: "",
         description: "",
-        images: null,
+        images: [],
         category_id: "1",
         visibility: "public"
     });
@@ -19,8 +19,11 @@ const CreatePostModal = ({ show, onHide }) => {
     };
 
     // Handle file input change
+    // const handleFileChange = (e) => {
+    //     setFormField({ ...formField, images: e.target.files[0] }); // only first file
+    // };
     const handleFileChange = (e) => {
-        setFormField({ ...formField, images: e.target.files[0] });
+        setFormField({ ...formField, images: Array.from(e.target.files) });
     };
 
     // Create Post Api Call
@@ -30,9 +33,15 @@ const CreatePostModal = ({ show, onHide }) => {
         const createPostFormData = new FormData();
         createPostFormData.append('title', formField.title);
         createPostFormData.append('description', formField.description);
-        if (formField.images) {
-            createPostFormData.append('images[]', formField.images);
+        // if (formField.images) {
+        //     createPostFormData.append('images[]', formField.images);
+        // }
+        if (formField.images && formField.images.length > 0) {
+            formField.images.forEach((file) => {
+                createPostFormData.append('images[]', file); // ✅ loop for all images
+            });
         }
+
         createPostFormData.append('category_id', formField.category_id);
         createPostFormData.append('visibility', formField.visibility);
 
@@ -45,7 +54,7 @@ const CreatePostModal = ({ show, onHide }) => {
             setFormField({
                 title: "",
                 description: "",
-                image: null,
+                image: [],
                 category_id: "1",
                 visibility: "public"
             }); // reset form
@@ -97,7 +106,7 @@ const CreatePostModal = ({ show, onHide }) => {
                         <label className="form-label">Post Image</label>
                         <input
                             type="file"
-                            name="image"
+                            name="images"
                             className="form-control"
                             onChange={handleFileChange}
                             accept="image/*"
