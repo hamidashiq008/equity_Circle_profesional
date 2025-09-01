@@ -256,7 +256,9 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
 
   const commetsApifunc = async (page = 1, append = false) => {
     try {
-      const response = await axios.get(`/post/${post.id}/comments?page=${page}`);
+      const response = await axios.get(
+        `/post/${post.id}/comments?page=${page}`
+      );
       const res = response.data || {};
       const items = Array.isArray(res.data)
         ? res.data
@@ -267,11 +269,13 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
       setPostCommetsApi((prev) => (append ? [...prev, ...items] : items));
 
       const current = res.current_page ?? page;
-      const last = res.last_page ?? (res.total && res.per_page
-        ? Math.ceil(res.total / res.per_page)
-        : items.length < 10
-        ? page
-        : page + 1);
+      const last =
+        res.last_page ??
+        (res.total && res.per_page
+          ? Math.ceil(res.total / res.per_page)
+          : items.length < 10
+          ? page
+          : page + 1);
       setHasMoreComments(current < last);
       setCommentsPage(current);
     } catch (error) {
@@ -295,11 +299,7 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
     const observer = new IntersectionObserver(
       (entries) => {
         const first = entries[0];
-        if (
-          first.isIntersecting &&
-          hasMoreComments &&
-          !loadingMoreComments
-        ) {
+        if (first.isIntersecting && hasMoreComments && !loadingMoreComments) {
           setLoadingMoreComments(true);
           commetsApifunc(commentsPage + 1, true).finally(() =>
             setLoadingMoreComments(false)
@@ -335,7 +335,7 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                   <div className="post-over-view">
                     {/* {post.media.length > 0 ? <img src={post.media[0].url} alt="" /> : null} */}
                     {post.media?.length === 1 && (
-                      <div className="card-img-wrapper">
+                      <div className="card-img-wrapper h-100">
                         <img
                           src={post.media[0].url}
                           alt="Post Media"
@@ -377,7 +377,10 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="post-comment-area-comments-content px-3 py-3" ref={commentsContainerRef}>
+                    <div
+                      className="post-comment-area-comments-content px-3 py-3"
+                      ref={commentsContainerRef}
+                    >
                       <div>
                         {postCommetsApi?.map((comment, index) => (
                           <div
@@ -553,9 +556,11 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                           </div>
                         ))}
                         {/* sentinel for infinite scroll */}
-                        <div ref={commentsEndSentinelRef}  />
+                        <div ref={commentsEndSentinelRef} />
                         {loadingMoreComments && (
-                          <div className="text-center text-muted small py-2">Loading more...</div>
+                          <div className="text-center text-muted small py-2">
+                            Loading more...
+                          </div>
                         )}
                       </div>
                     </div>
@@ -675,8 +680,6 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
           </Modal.Body>
         </Modal>
       )}
-
-      
     </>
   );
 };

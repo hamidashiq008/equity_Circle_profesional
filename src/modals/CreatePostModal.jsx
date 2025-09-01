@@ -1,130 +1,279 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import axios from '../utils/axios';
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import axios from "../utils/axios";
 
 const CreatePostModal = ({ show, onHide }) => {
-    // Create Post Form Data
-    const [formField, setFormField] = useState({
+  // Create Post Form Data
+  const [formField, setFormField] = useState({
+    title: "",
+    description: "",
+    files: [], // ✅ only one array for all file types
+    category_id: "1",
+    visibility: "public",
+  });
+
+  // Handle text input change
+  const formDataHolder = (e) => {
+    setFormField({ ...formField, [e.target.name]: e.target.value });
+  };
+
+  // Handle all files (images, videos, docs in one input)
+  const handleFileChange = (e) => {
+    setFormField({ ...formField, files: Array.from(e.target.files) });
+  };
+
+  // Remove selected file
+  const handleRemoveFile = (index) => {
+    const newFiles = [...formField.files];
+    newFiles.splice(index, 1);
+    setFormField({ ...formField, files: newFiles });
+  };
+
+  // Create Post Api Call
+  const createPostApiCall = async (e) => {
+    e.preventDefault();
+
+    const createPostFormData = new FormData();
+    createPostFormData.append("title", formField.title);
+    createPostFormData.append("description", formField.description);
+
+    // ✅ Append all files
+    if (formField.files.length > 0) {
+      formField.files.forEach((file) => {
+        if (file.type.startsWith("image/")) {
+          createPostFormData.append("images[]", file);
+        } else if (file.type.startsWith("video/")) {
+          createPostFormData.append("videos[]", file);
+        } else if (file.type.startsWith("application/pdf")) {
+          createPostFormData.append("documents[]", file);
+        } else if (file.type.startsWith("text/plain")) {
+          createPostFormData.append("documents[]", file);
+        }
+      });
+    }
+
+    createPostFormData.append("category_id", formField.category_id);
+    createPostFormData.append("visibility", formField.visibility);
+
+    try {
+      await axios.post("/posts", createPostFormData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Post created successfully!");
+      onHide(); // Close modal after success
+      setFormField({
         title: "",
         description: "",
-        images: [],
+        files: [],
         category_id: "1",
-        visibility: "public"
-    });
+        visibility: "public",
+      }); // reset form
+    } catch (err) {
+      console.error(err);
+      alert("Error in creating post");
+    }
+  };
+  const [tagField, setTagField] = useState([]);
+  const handleKeyDownFunc = (e) => {
+    if (e.key !== "Enter") return;
+    const tag = e.target.value;
+    if (!tag.trim()) return;
+    setTagField([...tagField, tag]);
+    e.target.value = "";
+  };
+  const handleRemoveTag = (index) => {
+    const newTags = [...tagField];
+    newTags.splice(index, 1);
+    setTagField(newTags);
+  };
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Create Post
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <form onSubmit={createPostApiCall}>
+          {/* Title */}
+          <div className="mb-3">
+            <label className="form-label">Post Title</label>
+            <input
+              type="text"
+              name="title"
+              className="form-control"
+              value={formField.title}
+              onChange={formDataHolder}
+              required
+            />
+            {formField.title.length > 0 && formField.title.length < 10 && (
+              <div className="text-danger mt-2">
+                Title should be at least 10 characters
+              </div>
+            )}
+          </div>
 
-    // Handle text input change
-    const formDataHolder = (e) => {
-        setFormField({ ...formField, [e.target.name]: e.target.value });
-    };
+          {/* Description */}
+          <div className="mb-3">
+            <label className="form-label">Post Description</label>
+            <textarea
+              name="description"
+              className="form-control"
+              value={formField.description}
+              onChange={formDataHolder}
+              required
+            ></textarea>
+            {formField.description.length > 0 &&
+              formField.description.length < 100 && (
+                <div className="text-danger mt-2">
+                  Description should be at least 100 characters
+                </div>
+              )}
+          </div>
 
-    // Handle file input change
-    // const handleFileChange = (e) => {
-    //     setFormField({ ...formField, images: e.target.files[0] }); // only first file
-    // };
-    const handleFileChange = (e) => {
-        setFormField({ ...formField, images: Array.from(e.target.files) });
-    };
+          {/* File Input */}
+          <div className="mb-3">
+            <label className="form-label">Upload Files</label>
+            <input
+              type="file"
+              name="files"
+              className="form-control"
+              onChange={handleFileChange}
+              accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+              multiple
+            />
+          </div>
 
-    // Create Post Api Call
-    const createPostApiCall = async (e) => {
-        e.preventDefault();
+          {/* ✅ File Preview Section with Remove Button + Doc Preview */}
+          {formField.files.length > 0 && (
+            <div className="mb-3">
+              <h6>Preview:</h6>
+              <div className="d-flex flex-wrap gap-3">
+                {formField.files.map((file, index) => {
+                  const fileURL = URL.createObjectURL(file);
 
-        const createPostFormData = new FormData();
-        createPostFormData.append('title', formField.title);
-        createPostFormData.append('description', formField.description);
-        // if (formField.images) {
-        //     createPostFormData.append('images[]', formField.images);
-        // }
-        if (formField.images && formField.images.length > 0) {
-            formField.images.forEach((file) => {
-                createPostFormData.append('images[]', file); // ✅ loop for all images
-            });
-        }
+                  return (
+                    <div
+                      key={index}
+                      className="position-relative border rounded p-1"
+                      style={{
+                        width: "180px",
+                        height: "150px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {/* Remove Button */}
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 z-index-"
+                        style={{ zIndex: 99 }}
+                        onClick={() => handleRemoveFile(index)}
+                      >
+                        ❌
+                      </button>
 
-        createPostFormData.append('category_id', formField.category_id);
-        createPostFormData.append('visibility', formField.visibility);
-
-        try {
-            const response = await axios.post('/posts', createPostFormData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
-            alert("Post created successfully!");
-            onHide(); // Close modal after success
-            setFormField({
-                title: "",
-                description: "",
-                image: [],
-                category_id: "1",
-                visibility: "public"
-            }); // reset form
-        } catch (err) {
-            console.error(err);
-            alert("Error in creating post");
-        }
-    };
-
-    return (
-        <Modal
-            show={show}
-            onHide={onHide}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Create Post
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <form onSubmit={createPostApiCall}>
-                    <div className="mb-3">
-                        <label className="form-label">Post Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            className="form-control"
-                            value={formField.title}
-                            onChange={formDataHolder}
-                            required
+                      {/* File Preview */}
+                      {file.type.startsWith("image/") ? (
+                        <img
+                          src={fileURL}
+                          alt={file.name}
+                          width="100%"
+                          height="100%"
+                          className="rounded"
+                          style={{ objectFit: "cover" }}
                         />
+                      ) : file.type.startsWith("video/") ? (
+                        <video
+                          width="100%"
+                          height="100%"
+                          controls
+                          className="rounded"
+                        >
+                          <source src={fileURL} type={file.type} />
+                          Your browser does not support video preview.
+                        </video>
+                      ) : file.type === "application/pdf" ? (
+                        <iframe
+                          src={fileURL}
+                          title={file.name}
+                          width="100%"
+                          height="100%"
+                          style={{ border: "none" }}
+                        />
+                      ) : file.type === "text/plain" ? (
+                        <iframe
+                          src={fileURL}
+                          title={file.name}
+                          width="100%"
+                          height="100%"
+                          style={{ border: "none" }}
+                        />
+                      ) : (
+                        //     <iframe
+                        //     src={`https://docs.google.com/gview?url=${fileURL}&embedded=true`}
+                        //     width="100%"
+                        //     height="150"
+                        //     title={file.name}
+                        //   />
+                        <div className="p-2 bg-light rounded text-truncate text-center">
+                          📄 {file.name}
+                        </div>
+                      )}
                     </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Post Description</label>
-                        <textarea
-                            name="description"
-                            className="form-control"
-                            value={formField.description}
-                            onChange={formDataHolder}
-                            required
-                        ></textarea>
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Post Image</label>
-                        <input
-                            type="file"
-                            name="images"
-                            className="form-control"
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            multiple />
-                    </div>
-
-                    <Button type="submit" variant="primary">
-                        Submit
-                    </Button>
-                </form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={onHide}>
-                    Close
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          <div className="mb-3">
+            <label className="form-label">Add tags</label>
+            <input type="text" onKeyDown={handleKeyDownFunc} />
+          </div>
+          {
+            tagField.length > 0 && (
+              <div className="mb-3">
+                <label className="form-label">Tags</label>
+                <div className="d-flex flex-wrap gap-2">
+                  {tagField.map((tag, index) => (
+                    <>
+                    <span
+                      key={index}
+                      className="badge bg-primary text-white"
+                    >
+                      {tag}
+                    </span>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleRemoveTag(index)}
+                    >
+                      ❌
+                    </button>
+                    </>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+          <Button type="submit" variant="primary">
+            Submit
+          </Button>
+        </form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 };
 
 export default CreatePostModal;

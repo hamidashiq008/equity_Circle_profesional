@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import axios from '../../utils/axios';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import Hamid from '../../assets/images/userProfile.png';
-import PostComments from '../../modals/PostComments'; // <-- Make sure path is correct
-import { useNavigate } from 'react-router-dom';
-import Carousel from 'react-bootstrap/Carousel';
-import CreatePostModal from '../../modals/CreatePostModal';
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import axios from "../../utils/axios";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import Hamid from "../../assets/images/userProfile.png";
+import PostComments from "../../modals/PostComments"; // <-- Make sure path is correct
+import { useNavigate } from "react-router-dom";
+import Carousel from "react-bootstrap/Carousel";
+import CreatePostModal from "../../modals/CreatePostModal";
 
 dayjs.extend(relativeTime);
 
@@ -20,7 +20,7 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null); // for passing data to modal
   const observer = useRef();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const fetchPosts = async (pageNum) => {
     try {
@@ -32,7 +32,7 @@ const Home = () => {
       setPage(current_page + 1);
       setHasMore(has_more);
     } catch (err) {
-      setError('Failed to fetch posts');
+      setError("Failed to fetch posts");
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const Home = () => {
     setSelectedPost(post); // set current post for modal
     setShowModal(true);
     navigate(`?${post.id}`, { replace: true });
-    console.log('POST', post.id)
+    console.log("POST", post.id);
   };
   // Comment close modal and remove id from url
   const closeModal = () => {
@@ -87,26 +87,28 @@ const Home = () => {
           return {
             ...post,
             likes_count: response.data.likes_count,
-            isLiked: response.data.isLiked // Make sure API returns this
+            isLiked: response.data.isLiked, // Make sure API returns this
           };
         }
         return post;
       });
       setPosts(updatedPosts);
     } catch (error) {
-      console.error('Error liking post:', error);
+      console.error("Error liking post:", error);
     }
-  }
+  };
   // Create Post Function
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const createPostFunc = () => {
     setShowCreatePostModal(true);
-  }
+  };
 
   return (
     <>
       <div className="create-post-btn">
-        <button className="btn btn-primary" onClick={createPostFunc}>Create Post</button>
+        <button className="btn btn-primary" onClick={createPostFunc}>
+          Create Post
+        </button>
       </div>
       {posts.map((item, index) => {
         const isExpanded = expandedPosts[index];
@@ -126,20 +128,27 @@ const Home = () => {
                 className="page-logo me-2"
               />
               <div>
-                <div className="fw-bold">{item.user?.name || 'Unknown'}</div>
-                <small>{dayjs(item.created_at).fromNow()} · <i className="fas fa-globe-asia"></i></small>
+                <div className="fw-bold">{item.user?.name || "Unknown"}</div>
+                <small>
+                  {dayjs(item.created_at).fromNow()} ·{" "}
+                  <i className="fas fa-globe-asia"></i>
+                </small>
               </div>
             </div>
 
             <div className="p-2">
               <div className="desceition-div">
-                <span className={`${!isExpanded ? 'clamp' : ''}`}>
+                <span className={`${!isExpanded ? "clamp" : ""}`}>
                   {item.description}
                 </span>
                 {isLong && !isExpanded && (
                   <button
                     className="btn p-0 read-more-btn"
-                    style={{ color: '#A8A8A8', fontSize: '14px', background: '#121212' }}
+                    style={{
+                      color: "#A8A8A8",
+                      fontSize: "14px",
+                      background: "#121212",
+                    }}
                     onClick={() => toggleReadMore(index)}
                   >
                     ...Read more
@@ -148,7 +157,7 @@ const Home = () => {
                 {isLong && isExpanded && (
                   <button
                     className="btn p-0 read-less-btn ms-2"
-                    style={{ color: '#A8A8A8', fontSize: '14px' }}
+                    style={{ color: "#A8A8A8", fontSize: "14px" }}
                     onClick={() => toggleReadMore(index)}
                   >
                     Read less
@@ -157,23 +166,47 @@ const Home = () => {
               </div>
             </div>
 
-
-
             {item.media?.length === 1 && (
               <div className="card-img-wrapper">
-                <img
-                  src={item.media[0].url}
-                  alt="Post Media"
-                  className="card-img-top"
-                />
+                {item.media[0].type?.startsWith("video/") ||
+                item.media[0].url.match(/\.(mp4|webm|ogg)$/) ? (
+                  <video
+                    src={item.media[0].url}
+                    controls
+                    className="card-img-top"
+                    style={{ maxHeight: "600px", objectFit: "cover" }}
+                  />
+                ) : (
+                  <img
+                    src={item.media[0].url}
+                    alt="Post Media"
+                    className="card-img-top"
+                    style={{ maxHeight: "600px", objectFit: "cover" }}
+                  />
+                )}
               </div>
             )}
 
             {item.media?.length > 1 && (
-              <Carousel touch={true} fade={true} interval={null}  >
+              <Carousel touch={true} fade={true} interval={null} className="post-preview-carousel">
                 {item.media.map((media, mediaIndex) => (
                   <Carousel.Item key={mediaIndex} className="card-img-top">
-                    <img src={media.url} alt={`Media ${mediaIndex}`} />
+                    {media.type?.startsWith("video/") ||
+                    media.url.match(/\.(mp4|webm|ogg)$/) ? (
+                      <video
+                        src={media.url}
+                        controls
+                        className="card-img-top"
+                        style={{ maxHeight: "600px", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <img
+                        src={media.url}
+                        alt="Post Media"
+                        className="card-img-top"
+                        style={{ maxHeight: "600px", objectFit: "cover" }}
+                      />
+                    )}
                   </Carousel.Item>
                 ))}
               </Carousel>
@@ -188,22 +221,22 @@ const Home = () => {
                     <i className="fas fa-laugh text-warning me-1"></i>
                   </div>
                   <div className="likes-wrapper">
-                    <span>{item.likes_count || '0'}</span>
+                    <span>{item.likes_count || "0"}</span>
                     <span className="ms-1">
-                      {item.likes_count <= 1 ? 'like' : 'likes'}
+                      {item.likes_count <= 1 ? "like" : "likes"}
                     </span>
                   </div>
                 </div>
                 <div className="comment-and-share d-flex gap-2">
                   <div className="comment-wrapper">
-                    {item.comments_count || '0'}
+                    {item.comments_count || "0"}
                     <span className="ms-1">
-                      {item.comments_count <= 1 ? 'comment' : 'comments'}
+                      {item.comments_count <= 1 ? "comment" : "comments"}
                     </span>
                   </div>
                   <div className="dot-wrapper">.</div>
                   <div className="share-wrapper">
-                    {item.shares || '0 shares'}
+                    {item.shares || "0 shares"}
                   </div>
                 </div>
               </div>
@@ -212,8 +245,16 @@ const Home = () => {
             <hr className="my-1 mx-3" />
 
             <div className="card-footer d-flex justify-content-around">
-              <button className="btn btn-light text-muted" onClick={() => postLikeFunction(item.id)}>
-                {item.isLiked ? <i className="far fa-thumbs-up me-2 bg-danger"></i> : <i className="far fa-thumbs-up me-2"></i>}Like
+              <button
+                className="btn btn-light text-muted"
+                onClick={() => postLikeFunction(item.id)}
+              >
+                {item.isLiked ? (
+                  <i className="far fa-thumbs-up me-2 bg-danger"></i>
+                ) : (
+                  <i className="far fa-thumbs-up me-2"></i>
+                )}
+                Like
               </button>
               {/* <button
                 className="btn btn-light text-muted comment-btn"
@@ -231,7 +272,7 @@ const Home = () => {
                 <i className="fas fa-share me-2"></i>Share
               </button>
             </div>
-          </div >
+          </div>
         );
       })}
 
@@ -239,24 +280,20 @@ const Home = () => {
       {error && <p className="text-danger text-center">{error}</p>}
 
       {/* Show Modal */}
-      {
-        showModal && (
-          <PostComments
-            show={showModal}
-            onHide={closeModal}
-            post={selectedPost}
-            setPosts={setSelectedPost}
-          />
-        )
-      }
-      {
-        showCreatePostModal && (
-          <CreatePostModal
-            show={showCreatePostModal}
-            onHide={() => setShowCreatePostModal(false)}
-          />
-        )
-      }
+      {showModal && (
+        <PostComments
+          show={showModal}
+          onHide={closeModal}
+          post={selectedPost}
+          setPosts={setSelectedPost}
+        />
+      )}
+      {showCreatePostModal && (
+        <CreatePostModal
+          show={showCreatePostModal}
+          onHide={() => setShowCreatePostModal(false)}
+        />
+      )}
     </>
   );
 };
