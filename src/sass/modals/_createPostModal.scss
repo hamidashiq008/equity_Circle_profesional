@@ -8,3 +8,26 @@
     margin-top: 10%;
   }
 }
+
+.tag-div {
+  position: relative;
+  .tag-content-div {
+    background-color: #585cd1;
+    color: white;
+    padding: 8px 36px 8px 12px;
+    border-radius: 5px;
+  }
+  .badge-wrapper {
+    margin-top: 10px !important;
+    word-break: break-word;
+  }
+  .remove-tag-btn {
+    position: absolute;
+    top: 15px;
+    right: 3px;
+    padding: 0px 3px 3px 4px;
+    border-radius: 50%;
+    height: 26px;
+    width: 26px;
+  }
+}

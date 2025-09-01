@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import axios from "../utils/axios";
-
+import { FaTimes } from "react-icons/fa";
 const CreatePostModal = ({ show, onHide }) => {
+  const [sendPostLoading, setSendPostLoading] = useState(false);
   // Create Post Form Data
   const [formField, setFormField] = useState({
     title: "",
@@ -33,7 +34,7 @@ const CreatePostModal = ({ show, onHide }) => {
   // Create Post Api Call
   const createPostApiCall = async (e) => {
     e.preventDefault();
-
+    setSendPostLoading(true);
     const createPostFormData = new FormData();
     createPostFormData.append("title", formField.title);
     createPostFormData.append("description", formField.description);
@@ -55,7 +56,11 @@ const CreatePostModal = ({ show, onHide }) => {
 
     createPostFormData.append("category_id", formField.category_id);
     createPostFormData.append("visibility", formField.visibility);
-
+    {
+      tagField.forEach((tag) => {
+        createPostFormData.append("tags[]", tag);
+      });
+    }
     try {
       await axios.post("/posts", createPostFormData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -77,8 +82,9 @@ const CreatePostModal = ({ show, onHide }) => {
   const [tagField, setTagField] = useState([]);
   const handleKeyDownFunc = (e) => {
     if (e.key !== "Enter") return;
-    const tag = e.target.value;
-    if (!tag.trim()) return;
+    e.preventDefault(); // Prevent form submission
+    const tag = e.target.value.trim();
+    if (!tag) return;
     setTagField([...tagField, tag]);
     e.target.value = "";
   };
@@ -101,7 +107,9 @@ const CreatePostModal = ({ show, onHide }) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <form onSubmit={createPostApiCall}>
+        {
+          !sendPostLoading ? (
+            <form onSubmit={createPostApiCall}>
           {/* Title */}
           <div className="mb-3">
             <label className="form-label">Post Title</label>
@@ -193,6 +201,7 @@ const CreatePostModal = ({ show, onHide }) => {
                         <video
                           width="100%"
                           height="100%"
+                          autoPlay
                           controls
                           className="rounded"
                         >
@@ -232,40 +241,49 @@ const CreatePostModal = ({ show, onHide }) => {
               </div>
             </div>
           )}
+
           <div className="mb-3">
-            <label className="form-label">Add tags</label>
-            <input type="text" onKeyDown={handleKeyDownFunc} />
+            <label className="form-label">Add Tags</label>
+            <input
+              type="text"
+              name="tags"
+              className="form-control"
+              onKeyDown={handleKeyDownFunc}
+            />
           </div>
-          {
-            tagField.length > 0 && (
-              <div className="mb-3">
-                <label className="form-label">Tags</label>
-                <div className="d-flex flex-wrap gap-2">
-                  {tagField.map((tag, index) => (
-                    <>
-                    <span
-                      key={index}
-                      className="badge bg-primary text-white"
-                    >
-                      {tag}
-                    </span>
+          {tagField.length > 0 && (
+            <div className="mb-3">
+              <label className="form-label">Tags</label>
+              <div className="d-flex flex-wrap gap-2">
+                {tagField.map((tag, index) => (
+                  <div className="tag-div" key={index}>
+                    <div className="mt-2 tag-content-div">
+                      <span className="badge-wrapper  text-white mt-2">
+                        {tag}
+                      </span>
+                    </div>
                     <button
                       type="button"
-                      className="btn btn-sm btn-danger"
+                      className="btn btn-sm btn-danger remove-tag-btn"
                       onClick={() => handleRemoveTag(index)}
                     >
-                      ❌
+                      <FaTimes />
                     </button>
-                    </>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            )
-          }
+            </div>
+          )}
           <Button type="submit" variant="primary">
             Submit
           </Button>
         </form>
+          ) : (
+            <div>
+              <h6>Post is being created...</h6>
+            </div>
+          )
+        }
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>

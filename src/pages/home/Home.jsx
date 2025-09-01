@@ -26,6 +26,7 @@ const Home = () => {
     try {
       setLoading(true);
       const res = await axios.get(`/posts?page=${pageNum}`);
+      console.log("API Response:", res.data); // Debug log
       const { data, current_page, last_page, has_more } = res.data;
 
       setPosts((prev) => [...prev, ...data]);
@@ -140,6 +141,24 @@ const Home = () => {
               <div className="desceition-div">
                 <span className={`${!isExpanded ? "clamp" : ""}`}>
                   {item.description}
+                  <div className="mt-2">
+                    {Array.isArray(item.tags) && item.tags.length > 0 && (
+                      <div className="d-flex flex-wrap gap-1">
+                        {item.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="  me-1 mb-1"
+                            style={{ color: "#adadf7", fontSize: "14px" }}
+                          >
+                            #
+                            {typeof tag === "string"
+                              ? ` ${tag}`
+                              : tag.name || tag.tag || "Tag"}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </span>
                 {isLong && !isExpanded && (
                   <button
@@ -167,12 +186,13 @@ const Home = () => {
             </div>
 
             {item.media?.length === 1 && (
-              <div className="card-img-wrapper">
+              <div className="card-img-wrapper p-2">
                 {item.media[0].type?.startsWith("video/") ||
                 item.media[0].url.match(/\.(mp4|webm|ogg)$/) ? (
                   <video
                     src={item.media[0].url}
                     controls
+                    autoPlay
                     className="card-img-top"
                     style={{ maxHeight: "600px", objectFit: "cover" }}
                   />
@@ -188,7 +208,12 @@ const Home = () => {
             )}
 
             {item.media?.length > 1 && (
-              <Carousel touch={true} fade={true} interval={null} className="post-preview-carousel">
+              <Carousel
+                touch={true}
+                fade={true}
+                interval={null}
+                className="post-preview-carousel"
+              >
                 {item.media.map((media, mediaIndex) => (
                   <Carousel.Item key={mediaIndex} className="card-img-top">
                     {media.type?.startsWith("video/") ||
@@ -196,6 +221,7 @@ const Home = () => {
                       <video
                         src={media.url}
                         controls
+                        autoPlay
                         className="card-img-top"
                         style={{ maxHeight: "600px", objectFit: "cover" }}
                       />
