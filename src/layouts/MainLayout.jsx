@@ -12,12 +12,10 @@ const MainLayout = () => {
     { username: "ammar_hehehe", name: "Followed by ahmadmujtab_a", img: Hamid },
     { username: "owner.5050", name: "Followed by ahmadmujtab_a", img: Hamid },
     { username: "the_aawaiz", name: "Followed by ahmadmujtab_a", img: Hamid },
-    {
-      username: "mohsin_jawad101",
-      name: "Followed by ahmadmujtab_a",
-      img: Hamid,
-    },
+   
     { username: "muhmd._01x", name: "Followed by ahmadmujtab_a", img: Hamid },
+    { username: "Ali_Hassan._01x", name: "Followed by ahmadmujtab_a", img: Hamid },
+
   ];
 
   return (
