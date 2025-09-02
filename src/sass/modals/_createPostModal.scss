@@ -31,3 +31,44 @@
     width: 26px;
   }
 }
+
+.create-post-modal-main-wrapper {
+  .modal-dialog {
+    .modal-header {
+      border-color: rgb(105, 105, 105) !important;
+    }
+    .modal-content {
+      background-color: #212328 !important;
+      color: white;
+      & input {
+        background-color: rgb(59 59 59) !important;
+        border: none;
+        color: white;
+      }
+      & textarea {
+        background-color: rgb(59 59 59) !important;
+        border: none;
+        color: white;
+      }
+      & button {
+        background-color: rgb(59 59 59) !important;
+        border-color: rgb(153, 153, 153) !important;
+      }
+    }
+    .modal-footer {
+      border-color: rgb(105, 105, 105) !important;
+    }
+  }
+}
+
+input[type="file"]::file-selector-button {
+  background-color: rgb(105, 105, 105);
+  color: white;
+  border: rgb(105, 105, 105);
+}
+
+input[type="file"]:hover {
+  &::file-selector-button {
+    background-color: rgb(122, 122, 122) !important;
+  }
+}

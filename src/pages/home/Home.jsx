@@ -106,8 +106,8 @@ const Home = () => {
 
   return (
     <>
-      <div className="create-post-btn">
-        <button className="btn btn-primary" onClick={createPostFunc}>
+      <div className="create-post-btn justify-content-end d-flex">
+        <button className="btn btn-secondary" onClick={createPostFunc}>
           Create Post
         </button>
       </div>

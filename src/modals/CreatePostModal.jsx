@@ -99,193 +99,192 @@ const CreatePostModal = ({ show, onHide }) => {
       onHide={onHide}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
+      className="create-post-modal-main-wrapper"
       centered
     >
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">
           Create Post
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {
-          !sendPostLoading ? (
-            <form onSubmit={createPostApiCall}>
-          {/* Title */}
-          <div className="mb-3">
-            <label className="form-label">Post Title</label>
-            <input
-              type="text"
-              name="title"
-              className="form-control"
-              value={formField.title}
-              onChange={formDataHolder}
-              required
-            />
-            {formField.title.length > 0 && formField.title.length < 10 && (
-              <div className="text-danger mt-2">
-                Title should be at least 10 characters
-              </div>
-            )}
-          </div>
-
-          {/* Description */}
-          <div className="mb-3">
-            <label className="form-label">Post Description</label>
-            <textarea
-              name="description"
-              className="form-control"
-              value={formField.description}
-              onChange={formDataHolder}
-              required
-            ></textarea>
-            {formField.description.length > 0 &&
-              formField.description.length < 100 && (
+        {!sendPostLoading ? (
+          <form onSubmit={createPostApiCall}>
+            {/* Title */}
+            <div className="mb-3">
+              <label className="form-label">Post Title</label>
+              <input
+                type="text"
+                name="title"
+                className="form-control"
+                value={formField.title}
+                onChange={formDataHolder}
+                required
+              />
+              {formField.title.length > 0 && formField.title.length < 10 && (
                 <div className="text-danger mt-2">
-                  Description should be at least 100 characters
+                  Title should be at least 10 characters
                 </div>
               )}
-          </div>
+            </div>
 
-          {/* File Input */}
-          <div className="mb-3">
-            <label className="form-label">Upload Files</label>
-            <input
-              type="file"
-              name="files"
-              className="form-control"
-              onChange={handleFileChange}
-              accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
-              multiple
-            />
-          </div>
-
-          {/* ✅ File Preview Section with Remove Button + Doc Preview */}
-          {formField.files.length > 0 && (
+            {/* Description */}
             <div className="mb-3">
-              <h6>Preview:</h6>
-              <div className="d-flex flex-wrap gap-3">
-                {formField.files.map((file, index) => {
-                  const fileURL = URL.createObjectURL(file);
+              <label className="form-label">Post Description</label>
+              <textarea
+                name="description"
+                className="form-control"
+                value={formField.description}
+                onChange={formDataHolder}
+                required
+              ></textarea>
+              {formField.description.length > 0 &&
+                formField.description.length < 100 && (
+                  <div className="text-danger mt-2">
+                    Description should be at least 100 characters
+                  </div>
+                )}
+            </div>
 
-                  return (
-                    <div
-                      key={index}
-                      className="position-relative border rounded p-1"
-                      style={{
-                        width: "180px",
-                        height: "150px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {/* Remove Button */}
+            {/* File Input */}
+            <div className="mb-3">
+              <label className="form-label">Upload Files</label>
+              <input
+                type="file"
+                name="files"
+                className="form-control"
+                onChange={handleFileChange}
+                accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                multiple
+              />
+            </div>
+
+            {/* ✅ File Preview Section with Remove Button + Doc Preview */}
+            {formField.files.length > 0 && (
+              <div className="mb-3">
+                <h6>Preview:</h6>
+                <div className="d-flex flex-wrap gap-3">
+                  {formField.files.map((file, index) => {
+                    const fileURL = URL.createObjectURL(file);
+
+                    return (
+                      <div
+                        key={index}
+                        className="position-relative border rounded p-1"
+                        style={{
+                          width: "180px",
+                          height: "150px",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {/* Remove Button */}
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 z-index-"
+                          style={{ zIndex: 99 }}
+                          onClick={() => handleRemoveFile(index)}
+                        >
+                          ❌
+                        </button>
+
+                        {/* File Preview */}
+                        {file.type.startsWith("image/") ? (
+                          <img
+                            src={fileURL}
+                            alt={file.name}
+                            width="100%"
+                            height="100%"
+                            className="rounded"
+                            style={{ objectFit: "cover" }}
+                          />
+                        ) : file.type.startsWith("video/") ? (
+                          <video
+                            width="100%"
+                            height="100%"
+                            autoPlay
+                            controls
+                            className="rounded"
+                          >
+                            <source src={fileURL} type={file.type} />
+                            Your browser does not support video preview.
+                          </video>
+                        ) : file.type === "application/pdf" ? (
+                          <iframe
+                            src={fileURL}
+                            title={file.name}
+                            width="100%"
+                            height="100%"
+                            style={{ border: "none" }}
+                          />
+                        ) : file.type === "text/plain" ? (
+                          <iframe
+                            src={fileURL}
+                            title={file.name}
+                            width="100%"
+                            height="100%"
+                            style={{ border: "none" }}
+                          />
+                        ) : (
+                          //     <iframe
+                          //     src={`https://docs.google.com/gview?url=${fileURL}&embedded=true`}
+                          //     width="100%"
+                          //     height="150"
+                          //     title={file.name}
+                          //   />
+                          <div className="p-2 bg-light rounded text-truncate text-center">
+                            📄 {file.name}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="mb-3">
+              <label className="form-label">Add Tags</label>
+              <input
+                type="text"
+                name="tags"
+                className="form-control"
+                onKeyDown={handleKeyDownFunc}
+              />
+            </div>
+            {tagField.length > 0 && (
+              <div className="mb-3">
+                <label className="form-label">Tags</label>
+                <div className="d-flex flex-wrap gap-2">
+                  {tagField.map((tag, index) => (
+                    <div className="tag-div" key={index}>
+                      <div className="mt-2 tag-content-div">
+                        <span className="badge-wrapper  text-white mt-2">
+                          {tag}
+                        </span>
+                      </div>
                       <button
                         type="button"
-                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 z-index-"
-                        style={{ zIndex: 99 }}
-                        onClick={() => handleRemoveFile(index)}
+                        className="btn btn-sm btn-danger remove-tag-btn"
+                        onClick={() => handleRemoveTag(index)}
                       >
-                        ❌
+                        <FaTimes />
                       </button>
-
-                      {/* File Preview */}
-                      {file.type.startsWith("image/") ? (
-                        <img
-                          src={fileURL}
-                          alt={file.name}
-                          width="100%"
-                          height="100%"
-                          className="rounded"
-                          style={{ objectFit: "cover" }}
-                        />
-                      ) : file.type.startsWith("video/") ? (
-                        <video
-                          width="100%"
-                          height="100%"
-                          autoPlay
-                          controls
-                          className="rounded"
-                        >
-                          <source src={fileURL} type={file.type} />
-                          Your browser does not support video preview.
-                        </video>
-                      ) : file.type === "application/pdf" ? (
-                        <iframe
-                          src={fileURL}
-                          title={file.name}
-                          width="100%"
-                          height="100%"
-                          style={{ border: "none" }}
-                        />
-                      ) : file.type === "text/plain" ? (
-                        <iframe
-                          src={fileURL}
-                          title={file.name}
-                          width="100%"
-                          height="100%"
-                          style={{ border: "none" }}
-                        />
-                      ) : (
-                        //     <iframe
-                        //     src={`https://docs.google.com/gview?url=${fileURL}&embedded=true`}
-                        //     width="100%"
-                        //     height="150"
-                        //     title={file.name}
-                        //   />
-                        <div className="p-2 bg-light rounded text-truncate text-center">
-                          📄 {file.name}
-                        </div>
-                      )}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-
-          <div className="mb-3">
-            <label className="form-label">Add Tags</label>
-            <input
-              type="text"
-              name="tags"
-              className="form-control"
-              onKeyDown={handleKeyDownFunc}
-            />
+            )}
+          </form>
+        ) : (
+          <div>
+            <h6>Post is being created...</h6>
           </div>
-          {tagField.length > 0 && (
-            <div className="mb-3">
-              <label className="form-label">Tags</label>
-              <div className="d-flex flex-wrap gap-2">
-                {tagField.map((tag, index) => (
-                  <div className="tag-div" key={index}>
-                    <div className="mt-2 tag-content-div">
-                      <span className="badge-wrapper  text-white mt-2">
-                        {tag}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-danger remove-tag-btn"
-                      onClick={() => handleRemoveTag(index)}
-                    >
-                      <FaTimes />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          <Button type="submit" variant="primary">
-            Submit
-          </Button>
-        </form>
-          ) : (
-            <div>
-              <h6>Post is being created...</h6>
-            </div>
-          )
-        }
+        )}
       </Modal.Body>
       <Modal.Footer>
+        <Button type="submit" onClick={createPostApiCall} variant="primary">
+          Submit
+        </Button>
         <Button variant="secondary" onClick={onHide}>
           Close
         </Button>
