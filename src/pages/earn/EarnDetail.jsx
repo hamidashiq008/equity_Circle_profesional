@@ -7,8 +7,10 @@ import {
   FaBriefcase,
   FaGlobe,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const EarnDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const job = location.state?.job;
@@ -16,14 +18,27 @@ const EarnDetail = () => {
   const [jobDetail, setJobDetail] = useState(job);
   const customSections = JSON.parse(jobDetail.custom_sections);
 
+  // Apply for job
+  const applyForJob = async () => {
+    navigate(`/earn-apply/${id}`);
+  };
+
+  // Job Like Func
+  const jobLikeFunc = async () => {
+  //   try {
+  //     const response = await axios.post(`/fav`, );
+  //   } catch (error) {
+      
+  //   }
+  };
   return (
     <div
-      className="container text-white p-4 rounded-4 shadow-sm"
+      className="container earn-detail-container text-white p-4 rounded-4 shadow-sm"
       style={{ backgroundColor: "rgb(24 24 24)", minHeight: "100vh" }}
     >
       <div className="detail-card">
         <div className="img-wrapper">
-          <img src={jobDetail.main_image_url} alt="" />
+          <img src={jobDetail.main_image_url} alt="" className="rounded-3" />
         </div>
         {/* Header Section */}
         <div className="d-flex justify-content-between align-items-start my-3">
@@ -45,7 +60,10 @@ const EarnDetail = () => {
             </p>
           </div>
 
-          <FaRegHeart style={{ fontSize: "20px", cursor: "pointer" }} />
+          <FaRegHeart
+            style={{ fontSize: "20px", cursor: "pointer" }}
+            onClick={jobLikeFunc}
+          />
         </div>
 
         {/* Description */}
@@ -82,7 +100,10 @@ const EarnDetail = () => {
 
         {/* Apply Button */}
         <div className=" py-3 px-4">
-          <button className="btn btn-dark w-100 rounded-pill fw-bold">
+          <button
+            className="btn btn-dark w-100 rounded-pill fw-bold"
+            onClick={applyForJob}
+          >
             APPLY NOW
           </button>
         </div>

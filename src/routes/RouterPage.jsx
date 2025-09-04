@@ -15,6 +15,7 @@ import EducationDetails from "../pages/education/EducationDetails";
 import PostComments from "../modals/PostComments";
 import Earn from "../pages/earn/Earn";
 import EarnDetail from "../pages/earn/EarnDetail";
+import EarnApply from "../pages/earn/EarnApply";
 const RouterPage = () => {
   const navigate = useNavigate();
 
@@ -46,6 +47,7 @@ const RouterPage = () => {
             <Route path="/postComments" element={<PostComments />} />
             <Route path="/earn" element={<Earn />} />
             <Route path="/earn/:id" element={<EarnDetail />} />
+            <Route path="/earn-apply/:id" element={<EarnApply />} />
           </Route>
         )}
       </Routes>
