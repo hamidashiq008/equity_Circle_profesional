@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "../../utils/axios";
 import { FaEllipsisH, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const Earn = () => {
   const [jobList, setJobList] = useState([]);
   const [expanded, setExpanded] = useState({});
@@ -31,6 +32,7 @@ const Earn = () => {
       try {
         const response = await axios.get("/jobs");
         setJobList(response.data);
+        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -62,7 +64,7 @@ const Earn = () => {
 
   return (
     <div className="container my-3">
-      <div className="d-flex gap-3 align-items-center  jobs-categories">
+      <div className="d-flex gap-3 align-items-center jobs-categories">
         {jobCategories?.map((category) => {
           return (
             <div
@@ -101,7 +103,7 @@ const Earn = () => {
 
                 <div className="w-100 d-flex justify-content-between">
                   <div className="d-flex gap-2">
-                    <h6 className="fw-bold m-0">{job.title}</h6>
+                    <h6 className="fw-normal m-0">{job.title}</h6>
                     <small className="text-secondary">
                       @{job.posted_by || "Admin"}
                     </small>
@@ -167,10 +169,11 @@ const Earn = () => {
               </div>
 
               {/* ✅ Description with line clamp */}
-              <div
-                className="about-job-detail"
+              <Link
+                className="about-job-detail text-decoration-none"
                 style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/earn/${job.id}`)}
+                to={`/earn/${job.id}`} 
+                state={{ job }}
               >
                 <p
                   className={`mt-2 mb-0 text-secondary small position-relative ${
@@ -197,10 +200,10 @@ const Earn = () => {
                 </div>
 
                 {/* Salary */}
-                <div className="fw-bold mt-2">
+                <div className="fw-normal mt-2 text-white">
                   £{job.max_salary} – £{job.min_salary}
                 </div>
-              </div>
+              </Link>
             </div>
           );
         })}
