@@ -6,6 +6,7 @@ import FeedIcon from '../assets/svges/feed.svg';
 import EducationIcon from '../assets/svges/education.svg';
 import JobListIcon from '../assets/svges/joblist.svg';
 import EventCalendarIcon from '../assets/svges/eventCalendar.svg';
+import { FaBriefcase, FaUserTie, FaBuilding } from "react-icons/fa";
 
 const Sidebar = ({ isOpen }) => {
   return (
@@ -81,6 +82,16 @@ const Sidebar = ({ isOpen }) => {
               </div>
               <div className="name-wrapper">
                 Home
+              </div>
+            </div>
+          </Nav.Link>
+          <Nav.Link as={Link} to="/earn">
+            <div className="inner-link-content  d-flex align-items-center gap-3">
+              <div className="icon-wrapper">
+                <FaUserTie size={20}  />
+              </div>
+              <div className="name-wrapper">
+                Earn
               </div>
             </div>
           </Nav.Link>

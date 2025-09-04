@@ -13,6 +13,8 @@ import EventCalendar from "../pages/EventCalendar";
 import FeedsDetails from "../pages/feeds/FeedsDetails";
 import EducationDetails from "../pages/education/EducationDetails";
 import PostComments from "../modals/PostComments";
+import Earn from "../pages/earn/Earn";
+import EarnDetail from "../pages/earn/EarnDetail";
 const RouterPage = () => {
   const navigate = useNavigate();
 
@@ -42,6 +44,8 @@ const RouterPage = () => {
             <Route path="/event-calendar" element={<EventCalendar />} />
             <Route path="/userProfile" element={<UserProfile />} />
             <Route path="/postComments" element={<PostComments />} />
+            <Route path="/earn" element={<Earn />} />
+            <Route path="/earn/:id" element={<EarnDetail />} />
           </Route>
         )}
       </Routes>

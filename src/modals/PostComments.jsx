@@ -359,8 +359,8 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                   </div>
                 </div>
               ) : null}
-              {post.media.length > 0 ? (
-                <div className="col-lg-5 h-100  ps-0">
+              
+                <div className={`${post.media.length > 0 ? "col-lg-5" : "col-lg-12"} h-100  ps-0`}>
                   <div className="post-comment-wrapper h-100">
                     <div className="post-comment-area-header  px-3 py-3">
                       <div className="inner-wrapper d-flex align-items-center justify-content-between">
@@ -644,9 +644,7 @@ const PostComments = ({ show, onHide, post, setPosts }) => {
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className="col-lg-12 h-100 "></div>
-              )}
+             
             </div>
           </div>
         </Modal.Body>

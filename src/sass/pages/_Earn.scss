@@ -1,0 +1,29 @@
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* ✅ Only 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .job-edit-delete-menu{
+    .dropdown-item:hover{
+        background-color: #4f5051;
+    }
+  }
+  .job-search-card{
+    width: 500px;
+    margin: 0 auto;
+  }
+  .get-jobs-cards{
+    padding-top: 1rem;
+  }
+  .jobs-categories-main-wrapper{
+      
+      background-color: #818181;
+      .jobs-categories{
+          z-index: 9999;
+          // background-color: #000000;
+          
+        }
+    }
