@@ -1,24 +1,73 @@
 import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useParams } from "react-router-dom";
+import axios from "../../utils/axios";
+import { toast } from "react-toastify";
 
 const EarnApply = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [file, setFile] = useState(null);
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const applyForJobWithCV = async () => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("job_title", jobTitle);
+      formData.append("linkedin_profile", linkedin);
+      formData.append("cv", file);
+      formData.append("job_id", id);
+
+      if (file) {
+        const response = await axios.post("/job-application", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }); 
+
+        // ✅ Success toast
+        toast.success("Application submitted successfully!");
+        console.log(response);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      // ❌ Error toast
+      toast.error(error.response.data.message);
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-black text-white px-4">
-      <div className="w-full max-w-md">
+    <div
+      className="d-flex justify-content-center align-items-center min-vh-100 px-3"
+      style={{
+        background: "linear-gradient(to bottom, #000, #111, #000)",
+        color: "#fff",
+      }}
+    >
+      <div
+        className="card shadow-lg p-4"
+        style={{
+          maxWidth: "450px",
+          width: "100%",
+          background: "rgba(20,20,20,0.9)",
+          border: "1px solid #333",
+          borderRadius: "16px",
+        }}
+      >
         {/* Header */}
-        <p className="uppercase text-gray-400 text-xs tracking-wide mb-1">
+        <small className="text-uppercase text-secondary fw-semibold">
           Applying For
-        </p>
-        <h2 className="text-lg font-semibold mb-8">
-          FITNES HUSTLE TESTING
-        </h2>
+        </small>
+        <h4 className="fw-normal mb-4 mt-1 text-white">
+          FITNESS HUSTLE TESTING
+        </h4>
 
         {/* Job Title */}
-        <div className="mb-6">
-          <label className="text-xs text-gray-400 uppercase block mb-2">
+        <div className="mb-3">
+          <label className="form-label text-uppercase text-secondary small">
             Job Title
           </label>
           <input
@@ -26,62 +75,99 @@ const EarnApply = () => {
             placeholder="Your current job title"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            className="w-full bg-transparent border-b border-gray-600 focus:border-white outline-none py-2 text-sm"
+            className="form-control bg-dark text-white border-0"
+            style={{
+              borderRadius: "10px",
+              padding: "12px",
+            }}
           />
         </div>
 
         {/* LinkedIn */}
-        <div className="mb-8">
-          <label className="text-xs text-gray-400 uppercase block mb-2">
-            @LinkedIn
+        <div className="mb-3">
+          <label className="form-label text-uppercase text-secondary small">
+            LinkedIn Profile
           </label>
           <input
             type="text"
-            placeholder="Add LinkedIn"
+            placeholder="https://linkedin.com/in/username"
             value={linkedin}
             onChange={(e) => setLinkedin(e.target.value)}
-            className="w-full bg-transparent border-b border-gray-600 focus:border-white outline-none py-2 text-sm"
+            className="form-control bg-dark text-white border-0"
+            style={{
+              borderRadius: "10px",
+              padding: "12px",
+            }}
           />
         </div>
 
         {/* Upload CV */}
-        <div className="mb-6">
-          <label className="text-xs text-gray-400 uppercase block mb-3">
+        <div className="mb-3">
+          <label className="form-label text-uppercase text-secondary small">
             Upload Your CV
           </label>
-          <div className="border-2 border-dashed border-gray-600 rounded-lg flex flex-col items-center justify-center py-10 cursor-pointer hover:border-white transition">
+          <div
+            className="border border-secondary rounded d-flex flex-column align-items-center justify-content-center p-4 text-center"
+            style={{
+              borderStyle: "dashed",
+              cursor: "pointer",
+              transition: "0.3s",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.borderColor = "#6f42c1")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.borderColor = "#6c757d")
+            }
+          >
             <input
               type="file"
-              accept=".pdf,.doc,.docx"
-              className="hidden"
+              accept=".pdf"
+              className="d-none"
               id="cvUpload"
               onChange={(e) => setFile(e.target.files[0])}
             />
             <label
               htmlFor="cvUpload"
-              className="flex flex-col items-center justify-center cursor-pointer"
+              className="w-100 h-100 d-flex flex-column align-items-center justify-content-center cursor-pointer"
             >
-              <span className="text-3xl">📄</span>
-              <p className="mt-2 text-sm font-medium">
-                {file ? file.name : "UPLOAD YOUR CV"}
+              <span style={{ fontSize: "2rem" }}>📄</span>
+              <p className="mt-2 mb-1 fw-medium text-secondary">
+                {file ? file.name : "Click to upload your CV"}
               </p>
-              <p className="text-xs text-gray-400 mt-1">
-                Supported Formats: PDF, DOC, DOCx
-              </p>
+              <small className="text-secondary ">
+                Supported: PDF, DOC, DOCx
+              </small>
             </label>
           </div>
         </div>
 
         {/* Privacy Note */}
-        <p className="text-[11px] text-gray-500 mb-8 flex items-start leading-relaxed">
-          <span className="mr-1">🔒</span> 
-          Your Information is kept private and will only be used to respond to your enquiry. Read our Privacy Policy for more.
-        </p>
+        <div className="text-white small d-flex align-items-start mt-3">
+          <span className="me-2 ">🔒</span>
+          <p className="content-wrapper">
+            Your information is kept private and will only be used to respond to
+            your application. See our{" "}
+            <a href="#" className="text-decoration-none text-info ms-1">
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </div>
 
-        {/* Apply Now Button */}
-        <button className="w-full bg-gray-900 text-white font-semibold py-4 rounded-full text-sm tracking-wide border border-gray-700 hover:bg-white hover:text-black transition">
-          APPLY NOW
-        </button>
+        {/* Apply Button */}
+        <div className=" py-3 px-4">
+          <button
+            className="btn w-100 rounded-pill fw-bold text-white"
+            style={{
+              backgroundColor: "#6c6c6c",
+            }}
+            onClick={applyForJobWithCV}
+            disabled={loading || !file || !jobTitle || !linkedin}
+          >
+            {loading ? "Applying..." : "APPLY NOW"}
+          </button>
+        </div>
       </div>
     </div>
   );

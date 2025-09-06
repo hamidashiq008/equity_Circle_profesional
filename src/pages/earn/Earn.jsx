@@ -169,41 +169,56 @@ const Earn = () => {
               </div>
 
               {/* ✅ Description with line clamp */}
-              <Link
-                className="about-job-detail text-decoration-none"
-                style={{ cursor: "pointer" }}
-                to={`/earn/${job.id}`} 
-                state={{ job }}
-              >
-                <p
-                  className={`mt-2 mb-0 text-secondary small position-relative ${
-                    isExpanded ? "" : "line-clamp"
-                  }`}
-                >
-                  {desc}
+              <div>
+                <div className="position-relative mb-2">
+                  <Link
+                    className={`mt-2 mb-0 text-secondary small text-decoration-none about-job-detail ${
+                      isExpanded ? "" : "line-clamp"
+                    }`}
+                    // className="about-job-detail "
+                    style={{ cursor: "pointer" }}
+                    to={`/earn/${job.id}`}
+                    state={{ job }}
+                  >
+                    {desc}
+                  </Link>
                   {desc.length > 0 && (
                     <span
-                      className="text-info small ms-1"
-                      style={{ cursor: "pointer" }}
+                      className="text-info small ms-1 position-absolute bottom-0"
+                      style={{
+                        cursor: "pointer",
+                        right: "0",
+                        background: "#181818",
+                      }}
                       onClick={() => toggleReadMore(job.id)}
                     >
                       {isExpanded ? "Read less" : "... Read more"}
                     </span>
                   )}
-                </p>
+                </div>
 
                 {/* Tags */}
-                <div className="d-flex flex-wrap gap-2 text-secondary small mt-2">
+                <Link
+                  className="d-flex flex-wrap gap-2 text-secondary small mb-2 text-decoration-none about-job-detail"
+                  style={{ cursor: "pointer" }}
+                  to={`/earn/${job.id}`}
+                  state={{ job }}
+                >
                   <span>{job.job_type || "Remote"}</span> ·{" "}
                   <span>{job.experience || "N/A"}</span> ·{" "}
                   <span>{job.employment_type || "Full-time"}</span>
-                </div>
+                </Link>
 
                 {/* Salary */}
-                <div className="fw-normal mt-2 text-white">
+                <Link
+                  className="fw-normal mt-3 text-white text-decoration-none about-job-detail"
+                  style={{ cursor: "pointer" }}
+                  to={`/earn/${job.id}`}
+                  state={{ job }}
+                >
                   £{job.max_salary} – £{job.min_salary}
-                </div>
-              </Link>
+                </Link>
+              </div>
             </div>
           );
         })}
