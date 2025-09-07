@@ -3,6 +3,7 @@ import axios from "../../utils/axios";
 import { FaEllipsisH, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 const Earn = () => {
   const [jobList, setJobList] = useState([]);
   const [expanded, setExpanded] = useState({});
@@ -62,6 +63,21 @@ const Earn = () => {
     fetchJobCategories();
   }, []);
 
+  // Delete job func
+  const deleteJobFunc = async (id) => {
+    alert("Are you sure you want to delete this job?");
+    console.log("del id", id);
+    try {
+      const response = await axios.delete(`/jobs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      toast.success("deleted SuccessFly");
+      setShowMenu(null);
+    } catch (error) {}
+  };
+  
   return (
     <div className="container my-3">
       <div className="d-flex gap-3 align-items-center jobs-categories">
@@ -147,16 +163,8 @@ const Earn = () => {
                         <button
                           className="dropdown-item d-flex align-items-center gap-2 text-danger"
                           onClick={(e) => {
-                            e.stopPropagation();
-                            if (
-                              window.confirm(
-                                "Are you sure you want to delete this job?"
-                              )
-                            ) {
-                              console.log("Delete job:", job.id);
-                              // 🔥 Add your delete API call here
-                            }
-                            setShowMenu(null);
+                            e.stopPropagation(); // ✅ prevent closing before click fires
+                            deleteJobFunc(job.id);
                           }}
                         >
                           <FaTrash />
@@ -227,4 +235,4 @@ const Earn = () => {
   );
 };
 
-export default Earn;
+export default Earn; 
