@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "../../utils/axios";
 import { toast } from "react-toastify";
 
-const EarnApply = () => {
+const ApplyJob = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [file, setFile] = useState(null);
@@ -24,7 +24,7 @@ const EarnApply = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }); 
+        });
 
         // ✅ Success toast
         toast.success("Application submitted successfully!");
@@ -173,4 +173,4 @@ const EarnApply = () => {
   );
 };
 
-export default EarnApply;
+export default ApplyJob;

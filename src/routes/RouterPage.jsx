@@ -13,9 +13,14 @@ import EventCalendar from "../pages/EventCalendar";
 import FeedsDetails from "../pages/feeds/FeedsDetails";
 import EducationDetails from "../pages/education/EducationDetails";
 import PostComments from "../modals/PostComments";
-import Earn from "../pages/earn/Earn";
-import EarnDetail from "../pages/earn/EarnDetail";
-import EarnApply from "../pages/earn/EarnApply";
+import Job from "../pages/job/Job";
+import ApplyJob from "../pages/job/ApplyJob";
+import JobDetails from "../pages/job/JobDetails";
+import EditJob from "../pages/job/EditJob";
+import EditJobSalary from "../pages/job/EditJobSalary";
+import EditJobThirdStep from "../pages/job/EditJobThirdStep";
+
+
 const RouterPage = () => {
   const navigate = useNavigate();
 
@@ -45,9 +50,12 @@ const RouterPage = () => {
             <Route path="/event-calendar" element={<EventCalendar />} />
             <Route path="/userProfile" element={<UserProfile />} />
             <Route path="/postComments" element={<PostComments />} />
-            <Route path="/earn" element={<Earn />} />
-            <Route path="/earn/:id" element={<EarnDetail />} />
-            <Route path="/earn-apply/:id" element={<EarnApply />} />
+            <Route path="/job" element={<Job />} />
+            <Route path="/job/:id" element={<JobDetails />} />
+            <Route path="/apply-Job/:id" element={<ApplyJob />} />
+            <Route path="/edit-job/:id" element={<EditJob />} />
+            <Route path="/edit-job-salary/:id" element={<EditJobSalary />} />
+            <Route path="/edit-job-third-step/:id" element={<EditJobThirdStep />} />
           </Route>
         )}
       </Routes>

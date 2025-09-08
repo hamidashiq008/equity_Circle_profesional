@@ -4,12 +4,16 @@ import { FaEllipsisH, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-const Earn = () => {
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import SplitButton from "react-bootstrap/SplitButton";
+const Job = () => {
   const [jobList, setJobList] = useState([]);
   const [expanded, setExpanded] = useState({});
   const [showMenu, setShowMenu] = useState(null);
   const [jobCategories, setJobCategories] = useState([]);
   const menuRef = useRef(null);
+
   const navigate = useNavigate();
   const toggleMenu = (jobId) => {
     setShowMenu(showMenu === jobId ? null : jobId);
@@ -63,6 +67,8 @@ const Earn = () => {
     fetchJobCategories();
   }, []);
 
+  // Edit job Function
+
   // Delete job func
   const deleteJobFunc = async (id) => {
     alert("Are you sure you want to delete this job?");
@@ -73,11 +79,13 @@ const Earn = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      toast.success("deleted SuccessFly");
+      toast.success("job deleted SuccessFly");
       setShowMenu(null);
-    } catch (error) {}
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
-  
+
   return (
     <div className="container my-3">
       <div className="d-flex gap-3 align-items-center jobs-categories">
@@ -126,53 +134,40 @@ const Earn = () => {
                   </div>
 
                   {/* Dropdown Menu */}
-                  <div className="position-relative" ref={menuRef}>
-                    <FaEllipsisH
-                      style={{ cursor: "pointer" }}
-                      onClick={() => toggleMenu(job.id)}
-                    />
-                    {showMenu === job.id && (
-                      <div
-                        className="dropdown-menu show job-edit-delete-menu"
-                        style={{
-                          position: "absolute",
-                          right: 0,
-                          zIndex: 1000,
-                          backgroundColor: "#2d2d2d",
-                          borderRadius: "8px",
-                          padding: "8px 0",
-                          minWidth: "140px",
-                          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                        }}
+
+                  <DropdownButton
+                    id="dropdown-item-button"
+                    className="job-edit-delete-dropdown"
+                    title={<FaEllipsisH />}
+                  >
+                    <Dropdown.Item as="button">
+                      <Link
+                        className="dropdown-item d-flex align-items-center gap-2 text-white"
+                        to={`/edit-job/${job.id}`}
+                        state={{ job }}
                       >
-                        <button
-                          className="dropdown-item d-flex align-items-center gap-2 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            console.log("Edit job:", job.id);
-                            setShowMenu(null);
-                          }}
-                        >
-                          <FaEdit />
-                          <span>Edit</span>
-                        </button>
-                        <div
-                          className="dropdown-divider my-1"
-                          style={{ borderColor: "#444" }}
-                        ></div>
-                        <button
-                          className="dropdown-item d-flex align-items-center gap-2 text-danger"
-                          onClick={(e) => {
-                            e.stopPropagation(); // ✅ prevent closing before click fires
-                            deleteJobFunc(job.id);
-                          }}
-                        >
-                          <FaTrash />
-                          <span>Delete</span>
-                        </button>
+                        <FaEdit />
+                        <span>Edit</span>
+                      </Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button">
+                      {" "}
+                      <div
+                        className="dropdown-divider my-1"
+                        style={{ borderColor: "#444" }}
+                      ></div>
+                    </Dropdown.Item>
+
+                    <Dropdown.Item as="button">
+                      <div
+                        className="dropdown-item d-flex align-items-center gap-2 text-danger"
+                        onClick={(e) => deleteJobFunc(job.id)}
+                      >
+                        <FaTrash />
+                        <span>Delete</span>
                       </div>
-                    )}
-                  </div>
+                    </Dropdown.Item>
+                  </DropdownButton>
                 </div>
               </div>
 
@@ -185,7 +180,7 @@ const Earn = () => {
                     }`}
                     // className="about-job-detail "
                     style={{ cursor: "pointer" }}
-                    to={`/earn/${job.id}`}
+                    to={`/job/${job.id}`}
                     state={{ job }}
                   >
                     {desc}
@@ -209,7 +204,7 @@ const Earn = () => {
                 <Link
                   className="d-flex flex-wrap gap-2 text-secondary small mb-2 text-decoration-none about-job-detail"
                   style={{ cursor: "pointer" }}
-                  to={`/earn/${job.id}`}
+                  to={`/job/${job.id}`}
                   state={{ job }}
                 >
                   <span>{job.job_type || "Remote"}</span> ·{" "}
@@ -224,7 +219,9 @@ const Earn = () => {
                   to={`/earn/${job.id}`}
                   state={{ job }}
                 >
-                  £{job.max_salary} – £{job.min_salary}
+                  {job.currency}
+                  {job.max_salary} – {job.currency}
+                  {job.min_salary}
                 </Link>
               </div>
             </div>
@@ -235,4 +232,4 @@ const Earn = () => {
   );
 };
 
-export default Earn; 
+export default Job;

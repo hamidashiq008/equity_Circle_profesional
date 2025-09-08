@@ -4,7 +4,7 @@ import { FaRegHeart, FaHeart } from "react-icons/fa"; // add filled heart
 import axios from "../../utils/axios";
 import { toast } from "react-toastify";
 
-const EarnDetail = () => {
+const JobDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation(); 
@@ -113,7 +113,7 @@ const EarnDetail = () => {
           <Link
             className="btn w-100 rounded-pill fw-bold text-white"
             style={{ backgroundColor: "#6c6c6c" }}
-            to={`/earn-apply/${jobDetail.id}`}
+            to={`/apply-job/${jobDetail.id}`}
             state={{ jobDetail }}
           >
             APPLY NOW
@@ -124,4 +124,4 @@ const EarnDetail = () => {
   );
 };
 
-export default EarnDetail;
+export default JobDetails;
