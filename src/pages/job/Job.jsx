@@ -143,7 +143,8 @@ const Job = () => {
                     <Dropdown.Item as="button">
                       <Link
                         className="dropdown-item d-flex align-items-center gap-2 text-white"
-                        to={`/edit-job/${job.id}`}
+                        to={`/edit-job-all-componet/${job.id}`}
+                        onClick={() => localStorage.setItem("job", '1')}
                         state={{ job }}
                       >
                         <FaEdit />

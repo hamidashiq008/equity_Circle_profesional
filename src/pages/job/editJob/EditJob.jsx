@@ -28,7 +28,7 @@ const EditJob = () => {
   };
   return (
     <div
-      className="container text-white p-3"
+      className="container edit-job-container text-white p-3"
       style={{ backgroundColor: "#121212", minHeight: "100vh" }}
     >
       {/* Header */}
@@ -103,7 +103,7 @@ const EditJob = () => {
           rows={3}
           placeholder="Enter description"
           className="bg-dark text-white border-secondary"
-          name="description"
+          name="short_description"
           value={jobData.short_description}
           onChange={handleInputChanges}
         />
@@ -130,7 +130,13 @@ const EditJob = () => {
             {jobData.tags.map((tag, index) => (
               <span key={index} className="edit-tags-div">
                 {tag.name}
-                <Button variant="outline-danger remove-tag-btn" size="sm" onClick={() => handleRemoveTag(tag.id)}><FaTimes /></Button>
+                <Button
+                  variant="outline-danger remove-tag-btn"
+                  size="sm"
+                  onClick={() => handleRemoveTag(tag.id)}
+                >
+                  <FaTimes />
+                </Button>
               </span>
             ))}
           </div>
@@ -146,16 +152,18 @@ const EditJob = () => {
 
       {/* Submit */}
       <div className="next-btn-div w-100 text-center">
-
-      <Link
-        className=" rounded-pill  fw-bold text-white text-decoration-none py-2 px-5 pppp"
-        style={{ backgroundColor: "#6c6c6c", border: "none", }}
-        to={`/edit-job-salary/${job.id}`}
-        state={{ job }}
+        <Link
+          className="rounded-pill fw-bold text-white text-decoration-none py-2 px-5 pppp"
+          style={{ backgroundColor: "#6c6c6c", border: "none" }}
+          onClick={() => {
+            localStorage.setItem("job2", "2");
+            localStorage.removeItem("job"); // only key needed
+          }}
+          state={{ job }}
         >
-        NEXT
-      </Link>
-        </div>
+          NEXT
+        </Link>
+      </div>
     </div>
   );
 };

@@ -16,9 +16,10 @@ import PostComments from "../modals/PostComments";
 import Job from "../pages/job/Job";
 import ApplyJob from "../pages/job/ApplyJob";
 import JobDetails from "../pages/job/JobDetails";
-import EditJob from "../pages/job/EditJob";
-import EditJobSalary from "../pages/job/EditJobSalary";
-import EditJobThirdStep from "../pages/job/EditJobThirdStep";
+import EditJob from "../pages/job/editJob/EditJob";
+import EditJobSalary from "../pages/job/editJob/EditJobSalary";
+import EditJobThirdStep from "../pages/job/editJob/EditJobThirdStep";
+import EditJobAllComponet from "../pages/job/editJob/EditJobAllComponet";
 
 
 const RouterPage = () => {
@@ -56,6 +57,7 @@ const RouterPage = () => {
             <Route path="/edit-job/:id" element={<EditJob />} />
             <Route path="/edit-job-salary/:id" element={<EditJobSalary />} />
             <Route path="/edit-job-third-step/:id" element={<EditJobThirdStep />} />
+            <Route path="/edit-job-all-componet/:id" element={<EditJobAllComponet />} />
           </Route>
         )}
       </Routes>

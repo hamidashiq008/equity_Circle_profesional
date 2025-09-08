@@ -1,23 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams, useNavigate, Link } from "react-router-dom";
-import { FaRegHeart, FaHeart } from "react-icons/fa"; // add filled heart
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import axios from "../../utils/axios";
 import { toast } from "react-toastify";
 
 const JobDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const location = useLocation(); 
-  const job = location.state?.job;
-  const [jobDetail] = useState(job);
-  const [like, setLike] = useState(false); // state for like/unlike
-  const customSections = JSON.parse(jobDetail.custom_sections);
+
+  const [jobDetailInfo, setJobDetailInfo] = useState({});
+  const [customSections, setCustomSections] = useState([]);
+  const [like, setLike] = useState(false);
+
+  // Get Job Details
+  useEffect(() => {
+    const getJobDetailsFunc = async () => {
+      try {
+        const response = await axios.get(`/jobs/${id}`);
+        const job = response.data.job;
+
+        setJobDetailInfo(job);
+
+        // Parse custom sections safely
+        if (job?.custom_sections) {
+          try {
+            const parsed =
+              typeof job.custom_sections === "string"
+                ? JSON.parse(job.custom_sections)
+                : job.custom_sections;
+            setCustomSections(parsed);
+          } catch (err) {
+            console.error("Error parsing custom_sections", err);
+            setCustomSections([]);
+          }
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Failed to load job");
+      }
+    };
+    getJobDetailsFunc();
+  }, [id]);
 
   // Job Like Func
   const jobLikeFunc = async () => {
+    if (!jobDetailInfo?.id) return;
+
     const formData = new FormData();
     formData.append("type", "job");
-    formData.append("type_id", jobDetail.id);
+    formData.append("type_id", jobDetailInfo.id);
 
     try {
       const response = await axios.post("/fav", formData);
@@ -34,11 +64,11 @@ const JobDetails = () => {
 
       console.log("Like Response: ", response);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
       console.error("Like error: ", error);
     }
   };
-   
+
   return (
     <div
       className="container earn-detail-container text-white p-4 rounded-4 shadow-sm"
@@ -46,24 +76,28 @@ const JobDetails = () => {
     >
       <div className="detail-card">
         <div className="img-wrapper">
-          <img src={jobDetail.main_image_url} alt="" className="rounded-3" />
+          <img
+            src={jobDetailInfo.main_image_url}
+            alt=""
+            className="rounded-3"
+          />
         </div>
 
         {/* Header Section */}
         <div className="d-flex justify-content-between align-items-start my-3">
           <div>
-            <h5 className="fw-normal">{jobDetail.title}</h5>
+            <h5 className="fw-normal">{jobDetailInfo.title}</h5>
             <p className="mt-2 mb-0 text-secondary small">
-              {jobDetail.subtitle}
+              {jobDetailInfo.subtitle}
             </p>
             <p className="fw-normal small mb-0 mt-1">
-              £{jobDetail.max_salary} – £{jobDetail.min_salary} +{" "}
-              {jobDetail.plus_extra}
+              £{jobDetailInfo.max_salary} – £{jobDetailInfo.min_salary} +{" "}
+              {jobDetailInfo.plus_extra}
               <br />
               <span>
-                {jobDetail.job_type} · {jobDetail.job_mode} ·{" "}
-                {jobDetail.location}, {jobDetail.location}
-              </span>
+                {jobDetailInfo.job_type} · {jobDetailInfo.job_mode} ·{" "}
+                {jobDetailInfo.location}
+              </span>{" "}
               (Preferred)
             </p>
           </div>
@@ -80,21 +114,25 @@ const JobDetails = () => {
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-secondary small">{jobDetail.short_description}</p>
+          <p className="text-secondary small">
+            {jobDetailInfo.short_description}
+          </p>
         </div>
 
         {/* Extra Section */}
-        <div className="mb-4">
-          <h6 className="fw-normal">{customSections[0].title}</h6>
-          <p className="text-secondary small">{customSections[0].description}</p>
-        </div>
+        {customSections.length > 0 && (
+          <div className="mb-4">
+            <h6 className="fw-normal">{customSections[0]?.title}</h6>
+            <p className="text-secondary small">
+              {customSections[0]?.description}
+            </p>
+          </div>
+        )}
 
         {/* Location */}
         <div className="mb-3">
           <h6 className="fw-normal">Location</h6>
-          <p className="text-secondary small">
-            {jobDetail.location}, {jobDetail.location}
-          </p>
+          <p className="text-secondary small">{jobDetailInfo.location}</p>
           <div className="rounded-3 overflow-hidden">
             <iframe
               title="Job Location"
@@ -113,8 +151,8 @@ const JobDetails = () => {
           <Link
             className="btn w-100 rounded-pill fw-bold text-white"
             style={{ backgroundColor: "#6c6c6c" }}
-            to={`/apply-job/${jobDetail.id}`}
-            state={{ jobDetail }}
+            to={`/apply-job/${jobDetailInfo.id}`}
+            state={{ jobDetailInfo }}
           >
             APPLY NOW
           </Link>

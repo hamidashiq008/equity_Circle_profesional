@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation , useNavigate} from "react-router-dom";
+
 const EditJobThirdStep = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const job = location.state.job;
   const customSections = JSON.parse(job.custom_sections);
 
@@ -24,7 +26,7 @@ const EditJobThirdStep = () => {
 
   return (
     <div
-      className="container text-white p-3"
+      className="container edit-job-third-step-container text-white p-3 mt-2"
       style={{ backgroundColor: "#121212", minHeight: "100vh" }}
     >
       {/* Header */}
@@ -94,6 +96,10 @@ const EditJobThirdStep = () => {
             backgroundColor: "#1e1e1e",
             border: "none",
             padding: "10px 30px",
+          }}
+          onClick={() => {
+            localStorage.removeItem("job3"); // only key needed
+            localStorage.setItem("job2", "2");
           }}
         >
           PREVIOUS

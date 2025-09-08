@@ -25,7 +25,7 @@ const EditJobSalary = () => {
 
   return (
     <div
-      className="container text-white p-3 mt-2 rounded"
+      className="container edit-job-salary-container text-white p-3 mt-2 rounded"
       style={{ backgroundColor: "#121212", minHeight: "100vh" }}
     >
       {/* Header */}
@@ -98,7 +98,8 @@ const EditJobSalary = () => {
             padding: "10px 30px",
           }}
           onClick={() => {
-            navigate(-1);
+            localStorage.removeItem("job2"); // only key needed
+            localStorage.setItem("job1", "1");
           }}
         >
           PREVIOUS
@@ -110,7 +111,10 @@ const EditJobSalary = () => {
             border: "none",
             padding: "10px 30px",
           }}
-          to={`/edit-job-third-step/${job.id}`}
+          onClick={() => {
+            localStorage.setItem("job3", "3");
+            localStorage.removeItem("job2"); // only key needed
+          }}
           state={{ job }}
         >
           NEXT
