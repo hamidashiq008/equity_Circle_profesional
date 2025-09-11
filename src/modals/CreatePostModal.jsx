@@ -10,7 +10,7 @@ const CreatePostModal = ({ show, onHide }) => {
     title: "",
     description: "",
     files: [], // ✅ only one array for all file types
-    category_id: "1",
+    category_id: "2",
     visibility: "public",
   });
 

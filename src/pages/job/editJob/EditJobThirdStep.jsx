@@ -1,27 +1,59 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
-import { useLocation , useNavigate} from "react-router-dom";
+import axios from "../../../utils/axios";
+// import { useLocation, useNavigate } from "react-router-dom";
 
-const EditJobThirdStep = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const job = location.state.job;
-  const customSections = JSON.parse(job.custom_sections);
+const EditJobThirdStep = ({ prevStep, jobData, handleInputChanges }) => {
+  // const location = useLocation();
+  // const navigate = useNavigate();
+  // const job = location.state.job;
+  // const customSections = JSON.parse(job.custom_sections);
 
-  const [formData, setFormData] = useState({
-    location: job?.location || "",
-    experience: job?.experience || "",
-    custom_sections_title: customSections[0].title || "",
-    custom_sections_description: customSections[0].description || "",
-  });
+  // const [jobData, setJobData] = useState({
+  //   location: job?.location || "",
+  //   experience: job?.experience || "",
+  //   custom_sections_title: customSections[0].title || "",
+  //   custom_sections_description: customSections[0].description || "",
+  // });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // const handleInputChanges = (e) => {
+  //   setJobData({ ...jobData, [e.target.name]: e.target.value });
+  // };
+  
+  console.log("Form Data to be sent:", jobData.id);
+  const updateJobFunc = async () => {
+    // alert("Are you sure you want to update this job?");
+    const formData = new FormData();
+   
+    formData.append("main_image", jobData.main_image);
+    formData.append("title", jobData.title);
+    formData.append("short_description", jobData.short_description);
+    formData.append("subtitle", jobData.subtitle);
+    formData.append("tags", JSON.stringify(jobData.tags));
+    formData.append("min_salary", jobData.min_salary);
+    formData.append("max_salary", jobData.max_salary);
+    formData.append("currency", jobData.currency);
+    formData.append("plus_extra", jobData.plus_extra);
+    formData.append("location", jobData.location);
+    formData.append("experience", jobData.experience);
+    formData.append("custom_sections", JSON.stringify([
+      {
+        title: jobData.custom_sections_title,
+        description: jobData.custom_sections_description,
+      },
+    ]));
+    try {
+      const response = await axios.put(`/jobs/${jobData.id}`, formData , {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Job updated successfully:", response.data);
+    } catch (error) {
+      console.error("Error updating job:", error);
+    }
 
-  const handleSubmit = () => {
-    console.log("Form Submitted:", formData);
   };
 
   return (
@@ -43,8 +75,8 @@ const EditJobThirdStep = () => {
           placeholder="Enter Location*"
           className="bg-dark text-white border-secondary"
           name="location"
-          value={formData.location}
-          onChange={handleChange}
+          value={jobData.location}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -56,8 +88,8 @@ const EditJobThirdStep = () => {
           placeholder="Enter Experience*"
           className="bg-dark text-white border-secondary"
           name="experience"
-          value={formData.experience}
-          onChange={handleChange}
+          value={jobData.experience}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -68,9 +100,9 @@ const EditJobThirdStep = () => {
           type="text"
           placeholder="Enter Job Title"
           className="bg-dark text-white border-secondary"
-          name="jobTitle"
-          value={formData.custom_sections_title}
-          onChange={handleChange}
+          name="custom_sections_title"
+          value={jobData.custom_sections_title}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -82,9 +114,9 @@ const EditJobThirdStep = () => {
           rows={3}
           placeholder="Enter Job Detail"
           className="bg-dark text-white border-secondary"
-          name="custom_sections_title"
-          value={formData.custom_sections_description}
-          onChange={handleChange}
+          name="custom_sections_description"
+          value={jobData.custom_sections_description}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -97,10 +129,7 @@ const EditJobThirdStep = () => {
             border: "none",
             padding: "10px 30px",
           }}
-          onClick={() => {
-            localStorage.removeItem("job3"); // only key needed
-            localStorage.setItem("job2", "2");
-          }}
+          onClick={prevStep}
         >
           PREVIOUS
         </Button>
@@ -111,7 +140,7 @@ const EditJobThirdStep = () => {
             border: "none",
             padding: "10px 30px",
           }}
-          onClick={handleSubmit}
+          onClick={updateJobFunc}
         >
           UPDATE HUSTLE
         </Button>

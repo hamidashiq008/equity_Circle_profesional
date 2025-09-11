@@ -1,27 +1,28 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
-const EditJobSalary = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const job = location.state.job;
-  const [jobSalaryData, setJobSalaryData] = useState({
-    min_salary: job?.min_salary || "",
-    max_salary: job?.max_salary || "",
-    currency: job?.currency || "",
-    plus_extra: job?.plus_extra || "",
-  });
-  console.log("jobSalaryData", jobSalaryData);
-  const handleChange = (e) => {
-    setJobSalaryData({ ...jobSalaryData, [e.target.name]: e.target.value });
-  };
+const EditJobSalary = ({ nextStep, prevStep, jobData, handleInputChanges }) => {
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const job = location.state.job;
 
-  const handleSubmit = () => {
-    console.log("Form Data:", jobSalaryData);
-  };
+  // const [jobData, setJobData] = useState({
+  //   min_salary: job?.min_salary || "",
+  //   max_salary: job?.max_salary || "",
+  //   currency: job?.currency || "",
+  //   plus_extra: job?.plus_extra || "",
+  // });
+  // console.log("jobData", jobData);
+  // const handleInputChanges = (e) => {
+  //   setJobData({ ...jobData, [e.target.name]: e.target.value });
+  // };
+
+  // const handleSubmit = () => {
+  //   console.log("Form Data:", jobData);
+  // };
 
   return (
     <div
@@ -41,8 +42,8 @@ const EditJobSalary = () => {
           placeholder="Enter minimum salary"
           className="bg-dark text-white border-secondary"
           name="min_salary"
-          value={jobSalaryData.min_salary}
-          onChange={handleChange}
+          value={jobData.min_salary}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -54,8 +55,8 @@ const EditJobSalary = () => {
           placeholder="Enter maximum salary"
           className="bg-dark text-white border-secondary"
           name="max_salary"
-          value={jobSalaryData.max_salary}
-          onChange={handleChange}
+          value={jobData.max_salary}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -65,8 +66,8 @@ const EditJobSalary = () => {
         <Form.Select
           className="bg-dark text-white border-secondary"
           name="currency"
-          value={jobSalaryData.currency}
-          onChange={handleChange}
+          value={jobData.currency}
+          onChange={handleInputChanges}
         >
           <option value="GBP (£)">GBP (£)</option>
           <option value="USD ($)">USD ($)</option>
@@ -83,8 +84,8 @@ const EditJobSalary = () => {
           placeholder="Enter Extra Bonus"
           className="bg-dark text-white border-secondary"
           name="plus_extra"
-          value={jobSalaryData.plus_extra}
-          onChange={handleChange}
+          value={jobData.plus_extra}
+          onChange={handleInputChanges}
         />
       </Form.Group>
 
@@ -97,28 +98,21 @@ const EditJobSalary = () => {
             border: "none",
             padding: "10px 30px",
           }}
-          onClick={() => {
-            localStorage.removeItem("job2"); // only key needed
-            localStorage.setItem("job1", "1");
-          }}
+          onClick={prevStep}
         >
           PREVIOUS
         </Button>
-        <Link
+        <button
           className="rounded-pill fw-bold bg-secondary text-white text-decoration-none"
           style={{
             backgroundColor: "#fff",
             border: "none",
             padding: "10px 30px",
           }}
-          onClick={() => {
-            localStorage.setItem("job3", "3");
-            localStorage.removeItem("job2"); // only key needed
-          }}
-          state={{ job }}
+          onClick={nextStep}
         >
           NEXT
-        </Link>
+        </button>
       </div>
     </div>
   );

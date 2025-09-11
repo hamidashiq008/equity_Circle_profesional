@@ -67,8 +67,7 @@ const Job = () => {
     fetchJobCategories();
   }, []);
 
-  // Edit job Function
-
+ 
   // Delete job func
   const deleteJobFunc = async (id) => {
     alert("Are you sure you want to delete this job?");

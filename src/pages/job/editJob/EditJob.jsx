@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
-const EditJob = () => {
+
+const EditJob = ({ nextStep, jobData, handleInputChanges, removeTag }) => {
   const [categories, setCategories] = useState([
     "CRYPTO",
     "FITNESS",
@@ -15,17 +16,57 @@ const EditJob = () => {
   const job = location.state.job;
   console.log("edit", job);
 
-  const [jobData, setJobData] = useState({
-    main_image_url: job?.main_image_url || "",
-    title: job?.title || "",
-    short_description: job?.short_description || "",
-    subtitle: job?.subtitle || "",
-    tags: job?.tags || [],
-  });
+  // IMAGE UPLOAD
+  const [preview, setPreview] = useState(jobData?.main_image_url || null);
+  const fileInputRef = useRef(null);
 
-  const handleInputChanges = (e) => {
-    setJobData({ ...jobData, [e.target.name]: e.target.value });
+  // Trigger hidden file input
+  const handleImageClick = () => {
+    fileInputRef.current.click();
   };
+
+  // Handle file change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file); // create preview link
+      setPreview(url);
+
+      // save both the file and preview in parent jobData
+      handleInputChanges({ target: { name: "main_image", value: file } });
+      handleInputChanges({ target: { name: "main_image_url", value: url } });
+    }
+  };
+
+  // ADD TAGS
+
+  const [tagField, setTagField] = useState(jobData?.tags || []);
+
+  const handleAddTagsFunc = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const tag = e.target.value.trim();
+      if (!tag) return;
+
+      const updatedTags = [...jobData.tags, {  name: tag }];
+      handleInputChanges({ target: { name: "tags", value: updatedTags } });
+
+      e.target.value = "";
+      console.log("tagssssssssssssssssssss", jobData.tags);
+    }
+  };
+
+
+
+  // REMOVE TAGS
+  const handleRemoveTag = (id) => {
+    const updatedTags = jobData.tags.filter((tag) => tag.id !== id);
+    handleInputChanges({ target: { name: "tags", value: updatedTags } });
+  }
+
+
+
+
   return (
     <div
       className="container edit-job-container text-white p-3"
@@ -46,17 +87,38 @@ const EditJob = () => {
           style={{
             height: "300px",
             backgroundColor: "#1e1e1e",
-            overflow: "hidden",
+            cursor: "pointer",
           }}
+          onClick={handleImageClick}
         >
-          {jobData?.main_image_url ? (
+          {jobData.main_image ? (
             <img
-              src={jobData?.main_image_url}
-              alt=""
+              src={preview}   // use preview for display
+              alt="Preview"
               className="edit-job-img"
+              style={{ objectFit: "cover", width: "100%", height: "100%" }}
             />
-          ) : null}
+          ) : jobData.main_image_url ? (
+            <img
+              src={jobData.main_image_url}
+              alt="Existing"
+              className="edit-job-img"
+              style={{ objectFit: "cover", width: "100%", height: "100%" }}
+            />
+          ) : (
+            <span className="text-white">Click to upload image</span>
+          )}
         </div>
+
+
+        {/* hidden file input */}
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
       </div>
 
       {/* Category */}
@@ -146,19 +208,16 @@ const EditJob = () => {
           placeholder="Enter tags"
           className="bg-dark text-white border-secondary"
           name="tags"
-          onChange={handleInputChanges}
+          onKeyDown={handleAddTagsFunc}
         />
       </Form.Group>
 
       {/* Submit */}
-      <div className="next-btn-div w-100 text-center">
+      <div className="next-btn-div w-100 text-end">
         <Link
-          className="rounded-pill fw-bold text-white text-decoration-none py-2 px-5 pppp"
+          className="rounded-pill fw-bold text-white text-decoration-none py-3 px-5 "
           style={{ backgroundColor: "#6c6c6c", border: "none" }}
-          onClick={() => {
-            localStorage.setItem("job2", "2");
-            localStorage.removeItem("job"); // only key needed
-          }}
+          onClick={nextStep}
           state={{ job }}
         >
           NEXT
